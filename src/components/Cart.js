@@ -89,7 +89,7 @@ const Cart = ({ cart, removeFromCart }) => {
   }
 
   return (
-    <div className="min-h-screen space-y-2">
+    <div className="min-h-screen space-y-2 pt-20">
       <h2 className="text-2xl font-semibold text-slate-600">CHECKOUT</h2>
 
       {/* order  */}

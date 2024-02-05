@@ -8,6 +8,7 @@ import {
   LuPhone,
   LuUser2,
 } from "react-icons/lu";
+import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
 export default function Header({ cart }) {
@@ -22,13 +23,14 @@ export default function Header({ cart }) {
   }
 
   return (
-    <>
+    <div className="fixed h-20  w-full top-0 left-0 z-20">
       {!isMenuOpen && (
         <div className="flex items-center justify-between px-3 py-2 h-20">
           <div className="text-3xl ml-1">
             <img src="./logo.jpeg" className="h-16 rounded-md" alt=""></img>
           </div>
           <div className="flex space-x-3 text-4xl">
+            <div><IoMdNotificationsOutline/></div>
             <Link to="/cart">
               <div className="relative">
                 {cart.length > 0 && (
@@ -46,7 +48,7 @@ export default function Header({ cart }) {
         </div>
       )}
       {isMenuOpen && <MobileMenu />}
-    </>
+    </div>
   );
 
   function MobileMenu() {
