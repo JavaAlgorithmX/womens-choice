@@ -5,8 +5,10 @@ import {
 } from "react-icons/md";
 import { GoPlus } from "react-icons/go";
 import { FiMinus } from "react-icons/fi";
+import { BsCartX } from "react-icons/bs";
 
-export default function ProductCard({ item, addToCart }) {
+
+export default function ProductCard({ item, addToCart ,removeFromCart}) {
   const image = item.image;
   const name = item.name;
   const discount = item.discount;
@@ -16,6 +18,7 @@ export default function ProductCard({ item, addToCart }) {
 
   const [isBoxClicked, setIsBoxClicked] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isAddToCartClicked, setIsAddToCartClicked] = useState(false);
 
   function handleAddToCart() {
     const cartItem = {
@@ -23,8 +26,13 @@ export default function ProductCard({ item, addToCart }) {
       isBox: isBoxClicked,
       quantity: quantity,
     };
-    console.log("CartItem",cartItem)
-    addToCart(cartItem);
+    if(!isAddToCartClicked){
+      console.log("CartItem", cartItem);
+      addToCart(cartItem);
+    }else{
+      removeFromCart(cartItem)
+    }
+    setIsAddToCartClicked(!isAddToCartClicked);
   }
 
   function selectPC() {
@@ -46,7 +54,12 @@ export default function ProductCard({ item, addToCart }) {
   return (
     <div className=" w-full bg-blue-300 rounded-md drop-shadow-lg">
       <div className="relative">
-        <img src={`${image}`} alt="" className="rounded-t-md"></img>
+        <img
+          src={isBoxClicked ? "./box.jpg" : image}
+          alt=""
+          className="rounded-t-md"
+        ></img>
+
         <div className="absolute h-20 w-20 rounded-full bg-red-600 flex items-center justify-center text-3xl top-3 left-3 text-white drop-shadow-lg">
           -{isBoxClicked ? discount + boxDiscount : discount}%
         </div>
@@ -119,7 +132,7 @@ export default function ProductCard({ item, addToCart }) {
             </div>
           </div>
           {/* quantity selector  */}
-          <div className=" flex space-x-2 w-full items-center justify-center  px-2 py-2 text-3xl">
+          <div className=" flex space-x-2 w-full items-center justify-center  px-2  text-3xl">
             <div className="text-3xl cursor-pointer drop-shadow-md bg-blue-400 px-2 py-2 rounded-md">
               <FiMinus onClick={handleQunatityMinus} />
             </div>
@@ -130,24 +143,27 @@ export default function ProductCard({ item, addToCart }) {
               <GoPlus onClick={handleQunatityPlus} />
             </div>
           </div>
+
         </div>
 
         {/* buttons  */}
-        <div className="flex flex-col space-y-2 text-xl items-center justify-center py-3">
+        <div className="flex flex-col space-y-2 text-xl items-center justify-center py-1">
           <div
-            className="flex items-center justify-center space-x-3 w-full px-5 py-2 bg-yellow-400 rounded-full "
-            onClick={
-              handleAddToCart
-              // () => addToCart(item)
-            }
-          >
-            <MdAddShoppingCart />
-            <span>Add to Cart</span>
+            className={`flex items-center justify-center 
+            space-x-3 w-full px-5 py-2 ${
+              isAddToCartClicked ? "bg-slate-500" : "bg-yellow-400"
+            }  rounded-full `}
+            onClick={handleAddToCart}
+          > {isAddToCartClicked ? <BsCartX/>:
+            <MdAddShoppingCart />}
+            <span>{isAddToCartClicked ? "Remove" : "Add to Cart"}</span>
           </div>
-          <div className="flex items-center justify-center space-x-3 w-full px-5 py-2 bg-yellow-300 rounded-full">
-            <MdOutlineShoppingCartCheckout />
-            <span>Buy Now</span>
-          </div>
+          {!isAddToCartClicked && (
+            <div className="flex items-center justify-center space-x-3 w-full px-5 py-2 bg-yellow-300 rounded-full">
+              <MdOutlineShoppingCartCheckout />
+              <span>Buy Now</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

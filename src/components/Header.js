@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import {  useNavigate } from 'react-router-dom';
+
 import {
   LuAlignJustify,
   LuShoppingCart,
@@ -26,9 +28,11 @@ export default function Header({ cart }) {
     <div className="fixed h-20  w-full top-0 left-0 z-20">
       {!isMenuOpen && (
         <div className="flex items-center justify-between px-3 py-2 h-20">
-          <div className="text-3xl ml-1">
+          <Link className="text-3xl ml-1"
+            to={'/'}
+          >
             <img src="./logo.jpeg" className="h-16 rounded-md" alt=""></img>
-          </div>
+          </Link>
           <div className="flex space-x-3 text-4xl">
             <div><IoMdNotificationsOutline/></div>
             <Link to="/cart">
