@@ -1,7 +1,29 @@
 import React from "react";
 import { MdDelete } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+
 
 const Cart = ({ cart, removeFromCart }) => {
+
+  const navigate = useNavigate();
+
+  // function handlePlaceOrder() {
+  //   const finalOrderItem = {
+  //     item: item,
+  //     isBox: isBoxClicked,
+  //     quantity: quantity,
+  //   };
+    
+  // }
+  function handlePlaceOrder(){
+    console.log("cart->",cart)
+  }
+
+  function navigateToProducts(){
+    navigate("/products");
+  }
+
+
   // Function to calculate total MRP
   const calculateTotalMRP = () => {
     return cart
@@ -43,7 +65,7 @@ const Cart = ({ cart, removeFromCart }) => {
 
   function OrderCard({ orderItem }) {
     return (
-      <div className="bg-yellow-300 px-2 py-2 rounded-md flex space-x-2">
+      <div className="bg-slate-300 px-2 py-2 rounded-md flex space-x-2">
         <div>
           <img src={orderItem.item.image} alt="" className="h-28 w-28" />
         </div>
@@ -89,7 +111,7 @@ const Cart = ({ cart, removeFromCart }) => {
   }
 
   return (
-    <div className="min-h-screen space-y-2 pt-20 px-4">
+    <div className="min-h-screen space-y-2 pt-20 px-4 bg-gradient-to-r from-fuchsia-600 to-purple-600">
       <h2 className="text-2xl font-semibold text-slate-600">CHECKOUT</h2>
 
       {/* order  */}
@@ -101,11 +123,11 @@ const Cart = ({ cart, removeFromCart }) => {
       </div>
       <div className="bg-green-500 rounded-md px-2 py-2">you are saving {calculateTotalMRP()-calculateTotalPayableAmount()} on this Order</div>
       {cart.length > 0 && <OrderTotal cart={cart} />}
-      <div className="w-full px-3 py-3 bg-blue-600 rounded-md flex items-center justify-center text-2xl text-white">
+      <div onClick={handlePlaceOrder} className="w-full px-3 py-3 bg-blue-600 rounded-md flex items-center justify-center text-2xl text-white">
         Place Order
       </div>
 
-      <div className="w-full px-3 py-3 bg-blue-600 rounded-md flex items-center justify-center text-2xl text-white">
+      <div onClick={navigateToProducts} className="w-full px-3 py-3 bg-blue-600 rounded-md flex items-center justify-center text-2xl text-white">
         Add More Products
       </div>
     </div>

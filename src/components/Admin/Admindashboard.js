@@ -1,11 +1,7 @@
 import { useState } from "react";
 import EnquiryCard from "../EnquiryCard";
 import { CiSettings } from "react-icons/ci";
-import { MdDashboard } from "react-icons/md";
-import { FaUserCog } from "react-icons/fa";
-import { TbShoppingCartCog } from "react-icons/tb";
-
-
+import AdminMenu from "./AdminNav";
 
 
 export default function AdminDashboard({ inquiries }) {
@@ -35,16 +31,6 @@ export default function AdminDashboard({ inquiries }) {
     );
   }
 
-  function AdminMenu() {
-    return (
-      <div className="bg-slate-900/50 w-full h-16 mb-2 rounded-full flex items-center justify-center space-x-10 text-3xl">
-        <div className="px-2 py-2 bg-slate-400/50 rounded-full drop-shadow-md"><MdDashboard/></div>
-        <div className="px-2 py-2 bg-slate-400/50 rounded-full drop-shadow-md"><FaUserCog/></div>
-        <div className="px-2 py-2 bg-slate-400/50 rounded-full drop-shadow-md"><TbShoppingCartCog/></div>
-      </div>
-    );
-  }
-
   function Order() {
     return (
       <div className=" w-full bg-slate-400 rounded-md px-2 py-2">Order</div>
@@ -52,13 +38,10 @@ export default function AdminDashboard({ inquiries }) {
   }
 
   return (
-    <div className="pt-20 min-h-screen px-4">
+    <div className="">
       {isAdminMenuClicked && <AdminMenu />}
       <div className="flex items-center justify-between mb-2">
         <p className="text-2xl">Admin Dashboard</p>
-        <div onClick={handleAdminMenu} className="text-3xl px-2 py-2">
-          <CiSettings />
-        </div>
       </div>
 
       <div className="relative w-full bg-blue-500 h-16 rounded-md flex space-x-5 justify-around items-center text-xl px-1 py-1 mb-3">

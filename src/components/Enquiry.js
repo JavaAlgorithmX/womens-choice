@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoIosCall } from "react-icons/io";
+import { CiMail } from "react-icons/ci";
 
 const InquiryForm = ({ onInquirySubmit }) => {
   const {
@@ -17,8 +18,10 @@ const InquiryForm = ({ onInquirySubmit }) => {
   };
 
   return (
-    <div className="w-full border border-t-slate-600">
-      <div className="text-xl text-center pt-3">Have a Query? Feel Free to Write to Us!</div>
+    <div className="w-full border-t-slate-600 pb-5">
+      <div className="text-xl font-semibold text-center pt-3">
+        Have a Query? Feel Free to Write to Us!
+      </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className=" flex flex-col px-5 w-full space-y-4 py-4  mt-2"
@@ -72,14 +75,30 @@ const InquiryForm = ({ onInquirySubmit }) => {
       <div className="text-center text-xl pb-4">
         Or Contact us on below contact details
       </div>
-      <div className="flex justify-around text-2xl">
-        <p className="flex space-x-2 items-center justify-start">
-          <IoIosCall className="text-blue-600" />
-          <span>7909064575</span>
-        </p>
-        <p className="flex space-x-2 items-center justify-start">
-          <FaWhatsapp className="text-green-600" />
-          <span>7909064575</span>
+      <div className="flex flex-col justify-center text-2xl px-4 space-y-2">
+        <div className="flex items-center justify-around">
+          <p className="flex space-x-2 items-center justify-start">
+            <IoIosCall className="text-blue-600" />
+            <span>7909064575</span>
+          </p>
+          <p className="flex space-x-2 items-center justify-start">
+            <FaWhatsapp className="text-green-600" />
+            <span>7909064575</span>
+          </p>
+        </div>
+        <div className="flex items-center justify-around">
+          <p className="flex space-x-2 items-center justify-start">
+            <IoIosCall className="text-blue-600" />
+            <span>7909064575</span>
+          </p>
+          <p className="flex space-x-2 items-center justify-start">
+            <FaWhatsapp className="text-green-600" />
+            <span>7909064575</span>
+          </p>
+        </div>
+        <p className="flex space-x-2 items-center justify-center">
+          <CiMail className="text-blue-600" />
+          <span>women's-choice@gmail.com</span>
         </p>
       </div>
     </div>

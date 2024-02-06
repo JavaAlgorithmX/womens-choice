@@ -122,7 +122,7 @@ export default function Header({ cart }) {
             </li>
             <li>
               <Link
-                to="/admin"
+                to="/admin/dashboard"
                 onClick={handleMenuClose}
                 className="space-x-3 flex items-center justify-center"
               >
