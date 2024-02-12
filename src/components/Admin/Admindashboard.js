@@ -1,17 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EnquiryCard from "../EnquiryCard";
-import { CiSettings } from "react-icons/ci";
-import AdminMenu from "./AdminNav";
+// import AdminMenu from "./AdminNav";
+import { collection, getDocs } from "firebase/firestore";
+import { useFirebase } from "../../context/FirebaseContext";
 
-export default function AdminDashboard({ inquiries }) {
+// Function to fetch enquiries from Firestore
+async function fetchEnquiries(db) {
+  const enquiriesCollection = collection(db, "inquiries"); // Assuming "enquiries" is the name of your Firestore collection
+  const snapshot = await getDocs(enquiriesCollection);
+  const enquiriesData = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  return enquiriesData;
+}
+
+async function fetchOrders(db) {
+  const orderCollection = collection(db, "orders"); // Assuming "enquiries" is the name of your Firestore collection
+  const snapshot = await getDocs(orderCollection);
+  const ordersData = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  return ordersData;
+}
+
+export default function AdminDashboard() {
   const [isOrderSelected, setIsOrderSelected] = useState(true);
-  const [isAdminMenuClicked, setisAdminMenuClicked] = useState(false);
+  const [enquiries, setEnquiries] = useState([]);
+  const [orders, setOrders] = useState([]);
 
-  function handleAdminMenu() {
-    setisAdminMenuClicked(!isAdminMenuClicked);
-  }
+  const { db } = useFirebase();
+
+  useEffect(() => {
+    const fetchOrdersData = async () => {
+      const ordersData = await fetchOrders(db);
+      setOrders(ordersData);
+    };
+    fetchOrdersData();
+    // Fetch enquiries when the component mounts
+    const fetchEnquiriesData = async () => {
+      const enquiriesData = await fetchEnquiries(db);
+      setEnquiries(enquiriesData);
+    };
+    fetchEnquiriesData();
+  }, [db]);
 
   function handleEnquirySelect() {
+    console.log("enquiry -->", enquiries);
     setIsOrderSelected(false);
   }
 
@@ -23,8 +59,8 @@ export default function AdminDashboard({ inquiries }) {
     return (
       <div className=" w-full bg-slate-400 rounded-md px-2 py-2">
         Enquiry
-        {inquiries.map((inquiry, index) => (
-          <EnquiryCard inquiry={inquiry} />
+        {enquiries.map((inquiry, index) => (
+          <EnquiryCard key={index} inquiry={inquiry} />
         ))}
       </div>
     );
@@ -32,13 +68,17 @@ export default function AdminDashboard({ inquiries }) {
 
   function Order() {
     return (
-      <div className=" w-full bg-slate-400 rounded-md px-2 py-2">Order</div>
+      <div className=" w-full bg-slate-400 rounded-md px-2 py-2">
+        Order
+        {orders.map((order,index)=>(
+          <div key={index}>{order.id}</div>
+        ))}
+        </div>
     );
   }
 
   return (
     <div className="">
-      {isAdminMenuClicked && <AdminMenu />}
       <div className="flex items-center justify-between mb-2">
         <p className="text-2xl">Admin Dashboard</p>
       </div>
@@ -64,7 +104,6 @@ export default function AdminDashboard({ inquiries }) {
           {isOrderSelected ? "Order" : "Enquiry"}
         </div>
       </div>
-      {/* <div>Heelo</div> */}
       {isOrderSelected && <Order />}
       {!isOrderSelected && <Enquiry />}
     </div>

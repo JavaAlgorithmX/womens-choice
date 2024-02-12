@@ -1,20 +1,54 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoIosCall } from "react-icons/io";
 import { CiMail } from "react-icons/ci";
+import { useFirebase } from "../context/FirebaseContext";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const InquiryForm = ({ onInquirySubmit }) => {
+  const { currentUser, db } = useFirebase();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    reset,
   } = useForm();
 
+  useEffect(() => {
+    if (currentUser) {
+      // Set default values for form fields if user is logged in
+      setValue("name", currentUser.displayName);
+      setValue("email", currentUser.email);
+      // You may need to retrieve the user's mobile number from the database
+      // and set it as well if it's stored separately
+    }
+  }, [currentUser, setValue]);
+
+  const addInquiryToFirestore = async (data) => {
+    const inquiryData = {
+      ...data,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      status: "Pending", // Set initial status
+    };
+
+    addDoc(collection(db, "inquiries"), inquiryData)
+      .then((docRef) => {
+        console.log("Enquiry placed successfully with ID: ", docRef.id);
+        // Navigate to the order success page or show a confirmation message
+      })
+      .catch((error) => {
+        console.error("Error placing enquiry: ", error);
+      });
+  };
+
   const onSubmit = (data) => {
-    // Handle form submission logic here
-    onInquirySubmit(data);
+    addInquiryToFirestore(data);
     console.log(data);
+    reset() 
   };
 
   return (
@@ -52,6 +86,22 @@ const InquiryForm = ({ onInquirySubmit }) => {
           />
           {errors.email && <p>{errors.email.message}</p>}
         </div>
+        <div>
+          <input
+            className="w-full px-3 py-2 rounded-md"
+            type="tel" // Change the type to "tel" for telephone numbers
+            id="mobile"
+            placeholder="Mobile"
+            {...register("mobile", {
+              required: "Mobile is required",
+              pattern: {
+                value: /^(\+91)?\d{10}$/, // Updated regex for mobile numbers
+                message: "Invalid mobile number",
+              },
+            })}
+          />
+        </div>
+
         <div>
           <textarea
             className="w-full px-3 py-2 rounded-md"
