@@ -11,6 +11,7 @@ import { getFirestore } from "firebase/firestore";
 //   appId: "1:549433980328:web:3b5088d086e9311194999d",
 //   measurementId:"G-WGQ4GCPGEH" , // Corrected typo
 // };
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
