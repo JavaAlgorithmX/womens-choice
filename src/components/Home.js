@@ -4,6 +4,7 @@ import InquiryForm from "./Enquiry";
 import { IoIosArrowDropdown } from "react-icons/io";
 import Carousel from "./ProductCarousel";
 
+
 const Home = ({ onInquirySubmit }) => {
   const navigate = useNavigate();
   function handleProcuctClick() {
@@ -31,6 +32,7 @@ const Home = ({ onInquirySubmit }) => {
 
         <div className="font-semibold text-4xl font-serif text-white mt-10 ">
           Odering App
+          {/* {process.env.REACT_APP_FIREBASE_API_KEY} */}
         </div>
 
         <button
@@ -64,6 +66,9 @@ const Home = ({ onInquirySubmit }) => {
           Products
         </button>
         <InquiryForm onInquirySubmit={onInquirySubmit} />
+        {/* <SignInWithGoogle/> */}
+        {/* <EmailSignIn/> */}
+        {/* <CreateCustomerForm/> */}
       </div>
     </div>
   );

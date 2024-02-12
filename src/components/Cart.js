@@ -1,9 +1,15 @@
 import React from "react";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useFirebase } from "../context/FirebaseContext";
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+
 
 
 const Cart = ({ cart, removeFromCart }) => {
+  const { currentUser, auth,userRole,db } = useFirebase();
+
 
   const navigate = useNavigate();
 
@@ -15,8 +21,37 @@ const Cart = ({ cart, removeFromCart }) => {
   //   };
     
   // }
-  function handlePlaceOrder(){
+  function handlePlaceOrder1(){
     console.log("cart->",cart)
+  }
+
+  function handlePlaceOrder() {
+    // Prepare the order data
+    const orderData = {
+      userId: currentUser.uid, // Assuming you have the current user object available
+      products: cart.map(item => ({
+        productId: item.item.id,
+        quantity: item.quantity,
+        isBox: item.isBox,
+        discount : item.item.discount,
+        boxDiscount : item.item.boxDiscount
+        
+      })),
+      totalAmount: calculateTotalPayableAmount(),
+      status: 'pending', // Set the initial status of the order
+      createdAt: serverTimestamp(), // Timestamp indicating when the order was placed
+    };
+    console.log("order data-> ",orderData);
+  
+    // Add the order data to Firestore
+    addDoc(collection(db, 'orders'), orderData)
+      .then(docRef => {
+        console.log('Order placed successfully with ID: ', docRef.id);
+        // Navigate to the order success page or show a confirmation message
+      })
+      .catch(error => {
+        console.error('Error placing order: ', error);
+      });
   }
 
   function navigateToProducts(){

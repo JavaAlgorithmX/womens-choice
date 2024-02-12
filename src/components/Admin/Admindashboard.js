@@ -3,7 +3,6 @@ import EnquiryCard from "../EnquiryCard";
 import { CiSettings } from "react-icons/ci";
 import AdminMenu from "./AdminNav";
 
-
 export default function AdminDashboard({ inquiries }) {
   const [isOrderSelected, setIsOrderSelected] = useState(true);
   const [isAdminMenuClicked, setisAdminMenuClicked] = useState(false);

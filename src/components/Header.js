@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {  useNavigate } from 'react-router-dom';
-
+import { LuLogIn } from "react-icons/lu";
 import {
   LuAlignJustify,
   LuShoppingCart,
@@ -12,10 +11,11 @@ import {
 } from "react-icons/lu";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import { useFirebase } from "../context/FirebaseContext";
 
 export default function Header({ cart }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { currentUser, auth, userRole } = useFirebase();
 
   function handleMenuClose() {
     setIsMenuOpen(false);
@@ -24,17 +24,29 @@ export default function Header({ cart }) {
     setIsMenuOpen(true);
   }
 
+  // Example function that uses Firebase auth
+  const signOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        console.log("User signed out successfully");
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
+  };
+
   return (
     <div className="fixed h-20  w-full top-0 left-0 z-20">
       {!isMenuOpen && (
         <div className="flex items-center justify-between px-3 py-2 h-20">
-          <Link className="text-3xl ml-1"
-            to={'/'}
-          >
+          <Link className="text-3xl ml-1" to={"/"}>
             <img src="./logo.jpeg" className="h-16 rounded-md" alt=""></img>
           </Link>
           <div className="flex space-x-3 text-4xl">
-            <div><IoMdNotificationsOutline/></div>
+            <div>
+              <IoMdNotificationsOutline />
+            </div>
             <Link to="/cart">
               <div className="relative">
                 {cart.length > 0 && (
@@ -57,38 +69,49 @@ export default function Header({ cart }) {
 
   function MobileMenu() {
     return (
-      <div className="absolute h-screen w-screen bg-gradient-to-b from-cyan-500 to-blue-500 flex flex-col-reverse items-center justify-between pb-10 pt-28 text-3xl font-bold z-20">
+      <div className="absolute h-screen w-screen bg-gradient-to-b from-cyan-500 to-blue-500 flex flex-col-reverse items-center justify-center text-3xl font-bold z-20">
+        {/* //Menu toggle  */}
         <div
           className="absolute top-6 right-6 text-white cursor-pointer "
           onClick={handleMenuClose}
         >
           X
         </div>
+        {/* Logo  */}
         <div className="absolute top-2 left-2 text-white cursor-pointer ">
           <img src="./logo.jpeg" className="h-20 rounded-md" alt=""></img>
         </div>
 
         <div className=" w-80 rounded-md px-2 py-2 space-y-3">
-          {isLoggedIn && (
-            <div className="text-xl font-semibold border border-slate-300 rounded-md px-2 py-3 text-slate-100">
-              <div className="flex justify-between">
+          {currentUser && (
+            <div className="w-4/5 mx-auto inset-x-0 bottom-28 text-xl font-semibold border border-slate-300 rounded-md px-2 py-3 text-slate-100 absolute">
+              <div className="flex flex-col ">
                 <p className="flex space-x-2 items-center justify-center">
                   <LuPhone />
-                  <span>7909064575</span>
+                  <span>{currentUser.email}</span>
+                </p>
+                <p className="flex space-x-2 items-center justify-center">
+                  <LuPhone />
+                  <span>{userRole}</span>
                 </p>
                 <p className="flex space-x-2 items-center justify-center">
                   <LuUser2 />
-                  <span>Admin</span>
+                  <span>{currentUser.displayName}</span>
                 </p>
               </div>
             </div>
           )}
-          <div className="h-16 w-full bg-slate-300 rounded-full flex items-center justify-center text-xl">
-            {isLoggedIn ? "Log Out" : "Log In"}
-          </div>
+          {currentUser && (
+            <div
+              onClick={signOut}
+              className="absolute inset-x-0 bottom-10 h-16 w-4/5 mx-auto bg-gradient-to-r from-red-500 to-orange-500  rounded-full flex items-center justify-center text-xl text-white"
+            >
+              Log Out
+            </div>
+          )}
         </div>
 
-        <nav className=" mt-28">
+        <nav className="">
           <ul className="space-y-3 text-white  flex flex-col items-start">
             <li>
               <Link
@@ -120,16 +143,42 @@ export default function Header({ cart }) {
                 <span>Cart</span>
               </Link>
             </li>
-            <li>
+            {currentUser &&
+              <li>
               <Link
-                to="/admin/dashboard"
+                to="/my-orders"
                 onClick={handleMenuClose}
                 className="space-x-3 flex items-center justify-center"
               >
-                <MdOutlineAdminPanelSettings />
-                <span>Admin</span>
+                <LuShoppingCart />
+                <span>My Orders</span>
               </Link>
             </li>
+            }
+            {currentUser && userRole === "admin" && (
+              <li>
+                <Link
+                  to="/admin/dashboard"
+                  onClick={handleMenuClose}
+                  className="space-x-3 flex items-center justify-center"
+                >
+                  <MdOutlineAdminPanelSettings />
+                  <span>Admin</span>
+                </Link>
+              </li>
+            )}
+            {!currentUser && (
+              <li>
+                <Link
+                  to="/logIn"
+                  onClick={handleMenuClose}
+                  className="space-x-3 flex items-center justify-center"
+                >
+                  <LuLogIn />
+                  <span>LogIn</span>
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       </div>

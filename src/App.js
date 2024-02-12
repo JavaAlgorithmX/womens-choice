@@ -10,6 +10,9 @@ import AppLayout from "./layout/AppLayout";
 import AdminLayout from "./layout/AdminLayout";
 import ManageProduct from "./components/Admin/ManageProduct";
 import ManageUser from "./components/Admin/ManageUser";
+import EmailSignIn from "./auth/SignInEmail";
+import CreateCustomerForm from "./components/User/CreateCustomer";
+import MyOrders from "./components/MyOrders";
 
 const App = () => {
   const [cart, setCart] = useState([]);
@@ -96,10 +99,16 @@ const App = () => {
                 />
               }
             />
+            <Route path="/login" element={<EmailSignIn/>}/>
+            <Route path="/signup" element={<CreateCustomerForm/>}/>
            
             <Route
               path="/cart"
               element={<Cart cart={cart} removeFromCart={removeFromCart} />}
+            />
+            <Route
+              path="/my-orders"
+              element={<MyOrders/>}
             />
 
             {/* Admin routes  */}
