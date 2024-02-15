@@ -115,11 +115,11 @@ const App = () => {
 
             {/* Admin routes  */}
             </Route>
-             <Route element={<AdminLayout />}>
+             <Route  element={<AdminLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard  setOrderData={setOrderData}/>} />
               <Route path="/admin/manage-products" element={<ManageProduct/>}/>
               <Route path="/admin/manage-users" element={<ManageUser/>}/>
-              <Route path="/admin/orders/:orderId" element={<AdminOrderDetails orderData={orderData}/>}  />
+              <Route path="/admin/order/:orderId" element={<AdminOrderDetails orderData={orderData}/>}  />
             </Route>
           </Routes>
     </Router>

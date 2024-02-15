@@ -32,42 +32,15 @@ export default function AdminOrderCard({order , setOrderData}){
     console.log("User Data--> ",userData);
   }
 
-  // Fetch user data when component mounts
-//   useEffect(() => {
-//     const fetchUserData = async () => {
-//       const data = await getUserData(order.userId);
-//       setUserData(data);
-//     };
-//     fetchUserData();
-//   }, [db, getUserData, order.userId]);
-    // Function to format the timestamp to a readable date format
-//   const formatDate = (timestamp) => {
-//     const date = new Date(timestamp.seconds * 1000);
-//     return date.toLocaleDateString('en-US', {
-//       year: 'numeric',
-//       month: 'long',
-//       day: 'numeric',
-//     });
-//   };
-const formatDate = (timestamp) => {
-    const date = new Date(timestamp.seconds * 1000);
-    const options = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true // Set to true to use 12-hour clock format
-    };
-    return date.toLocaleDateString('en-US', options);
-};
-  function showOrderDetails(order){
+
+  function showOrderDetails(){
     setOrderData(order);
+    console.log("order-->",order);
     navigate(`/admin/order/${order.id}`);
   }
 // 
     return(
-        <div onClick={()=>{showOrderDetails(order.id)}}  className="bg-gradient-to-r from-violet-600 to-indigo-600 px-2 py-2 rounded-md">
+        <div onClick={showOrderDetails}  className="bg-gradient-to-r from-violet-600 to-indigo-600 px-2 py-2 rounded-md">
             {/* <div className="text-slate-50">Order ID :  <span className="text-slate-200 px-2">{order.id}</span></div> */}
             <div className="text-slate-50">Order Date :  <span className="text-slate-200 px-2">{formatDate(order.createdAt)}</span></div>
             <div className="text-slate-50">Status :  <span className="text-slate-200 px-2">{order.status}</span></div>

@@ -77,7 +77,7 @@ export default function AdminDashboard({setOrderData}) {
   //   navigate(`/admin/order/${order.id}`)
   // };
 
-  function Order() {
+  function Order({setOrderData}) {
     return (
       <div className=" w-full bg-slate-400 rounded-md px-2 py-2 space-y-3">
         Order
@@ -116,7 +116,7 @@ export default function AdminDashboard({setOrderData}) {
           {isOrderSelected ? "Order" : "Enquiry"}
         </div>
       </div>
-      {isOrderSelected && <Order />}
+      {isOrderSelected && <Order setOrderData={setOrderData} />}
       {!isOrderSelected && <Enquiry />}
     </div>
   );
