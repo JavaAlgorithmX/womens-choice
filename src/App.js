@@ -13,10 +13,12 @@ import ManageUser from "./components/Admin/ManageUser";
 import EmailSignIn from "./auth/SignInEmail";
 import CreateCustomerForm from "./components/User/CreateCustomer";
 import MyOrders from "./components/MyOrders";
+import AdminOrderDetails from "./components/Admin/AdminOrderDetails";
 
 const App = () => {
   const [cart, setCart] = useState([]);
   const [inquiries, setInquiries] = useState([]);
+  const [orderData, setOrderData] = useState(null);
   const items = [
     {
       id: 1,
@@ -114,9 +116,10 @@ const App = () => {
             {/* Admin routes  */}
             </Route>
              <Route element={<AdminLayout />}>
-              <Route path="/admin/dashboard" element={<AdminDashboard inquiries={inquiries} />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard  setOrderData={setOrderData}/>} />
               <Route path="/admin/manage-products" element={<ManageProduct/>}/>
               <Route path="/admin/manage-users" element={<ManageUser/>}/>
+              <Route path="/admin/orders/:orderId" element={<AdminOrderDetails orderData={orderData}/>}  />
             </Route>
           </Routes>
     </Router>

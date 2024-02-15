@@ -12,6 +12,8 @@ export const FirebaseProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
+  const [userMobile, setUserMobile] = useState(null);
+
 
   // Initialize auth
   const auth = getAuth(app);
@@ -27,6 +29,7 @@ useEffect(() => {
         const unsubscribeRole = onSnapshot(userDocRef, (doc) => {
           if (doc.exists()) {
             setUserRole(doc.data().role);
+            setUserMobile(doc.data().mobile);
           } else {
             console.log("No such document!");
           }
@@ -36,6 +39,7 @@ useEffect(() => {
       } else {
         // If no user is logged in, reset user role
         setUserRole(null);
+        setUserMobile(null);
       }
     });
 
@@ -43,6 +47,7 @@ useEffect(() => {
   }, []);
 
   const value = {
+    userMobile,
     userRole,
     currentUser,
     db,

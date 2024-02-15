@@ -8,7 +8,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 
 const Cart = ({ cart, removeFromCart }) => {
-  const { currentUser, auth,userRole,db } = useFirebase();
+  const { currentUser, userMobile,db } = useFirebase();
 
 
   const navigate = useNavigate();
@@ -29,6 +29,8 @@ const Cart = ({ cart, removeFromCart }) => {
     // Prepare the order data
     const orderData = {
       userId: currentUser.uid, // Assuming you have the current user object available
+      userName: currentUser.displayName,
+      userMobile:userMobile,
       products: cart.map(item => ({
         productId: item.item.id,
         quantity: item.quantity,

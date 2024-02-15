@@ -3,6 +3,9 @@ import EnquiryCard from "../EnquiryCard";
 // import AdminMenu from "./AdminNav";
 import { collection, getDocs } from "firebase/firestore";
 import { useFirebase } from "../../context/FirebaseContext";
+import AdminOrderCard from "./AdminOrderCard";
+import { useNavigate } from "react-router-dom";
+
 
 // Function to fetch enquiries from Firestore
 async function fetchEnquiries(db) {
@@ -25,11 +28,11 @@ async function fetchOrders(db) {
   return ordersData;
 }
 
-export default function AdminDashboard() {
+export default function AdminDashboard({setOrderData}) {
   const [isOrderSelected, setIsOrderSelected] = useState(true);
   const [enquiries, setEnquiries] = useState([]);
   const [orders, setOrders] = useState([]);
-
+  const navigate = useNavigate();
   const { db } = useFirebase();
 
   useEffect(() => {
@@ -44,6 +47,7 @@ export default function AdminDashboard() {
       setEnquiries(enquiriesData);
     };
     fetchEnquiriesData();
+    
   }, [db]);
 
   function handleEnquirySelect() {
@@ -53,6 +57,7 @@ export default function AdminDashboard() {
 
   function handleOrderSelect() {
     setIsOrderSelected(true);
+    console.log("Orders -> ",orders);
   }
 
   function Enquiry() {
@@ -65,13 +70,20 @@ export default function AdminDashboard() {
       </div>
     );
   }
+  // const handleOrderClick = (order) => {
+  //   setOrderData(order);
+  //   console.log(order)
+  //   // Navigate to the order details page
+  //   navigate(`/admin/order/${order.id}`)
+  // };
 
   function Order() {
     return (
-      <div className=" w-full bg-slate-400 rounded-md px-2 py-2">
+      <div className=" w-full bg-slate-400 rounded-md px-2 py-2 space-y-3">
         Order
         {orders.map((order,index)=>(
-          <div key={index}>{order.id}</div>
+          // <div key={index}>{order.id}</div>
+          <AdminOrderCard  key={index} order={order} setOrderData={setOrderData}/>
         ))}
         </div>
     );
