@@ -1,6 +1,7 @@
 import { doc, getDoc } from "firebase/firestore";
 import { useFirebase } from "../../context/FirebaseContext";
 import UserDetails from "./userDetailsCard";
+import {formatDate } from "../../utils/utility"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -27,10 +28,10 @@ export default function AdminOrderCard({order , setOrderData}){
     }
   };
 
-  async function getUserDataHandle(){
-    const userData = await getUserData("pRpE1dSFgEPeP6hkblFM8O05X4B3");
-    console.log("User Data--> ",userData);
-  }
+  // async function getUserDataHandle(){
+  //   const userData = await getUserData("pRpE1dSFgEPeP6hkblFM8O05X4B3");
+  //   console.log("User Data--> ",userData);
+  // }
 
 
   function showOrderDetails(){
