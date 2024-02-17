@@ -6,8 +6,8 @@ import { CiMail } from "react-icons/ci";
 import { useFirebase } from "../context/FirebaseContext";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
-const InquiryForm = ({ onInquirySubmit }) => {
-  const { currentUser, db } = useFirebase();
+const InquiryForm = () => {
+  const { currentUser, db,userMobile } = useFirebase();
 
   const {
     register,
@@ -19,13 +19,11 @@ const InquiryForm = ({ onInquirySubmit }) => {
 
   useEffect(() => {
     if (currentUser) {
-      // Set default values for form fields if user is logged in
       setValue("name", currentUser.displayName);
       setValue("email", currentUser.email);
-      // You may need to retrieve the user's mobile number from the database
-      // and set it as well if it's stored separately
+      setValue("mobile",userMobile)
     }
-  }, [currentUser, setValue]);
+  }, [currentUser, setValue, userMobile]);
 
   const addInquiryToFirestore = async (data) => {
     const inquiryData = {

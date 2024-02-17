@@ -35,6 +35,10 @@ export default function ProductCard({ item, addToCart ,removeFromCart}) {
     setIsAddToCartClicked(!isAddToCartClicked);
   }
 
+  function handleBuyNow(){
+
+  }
+
   function selectPC() {
     setIsBoxClicked(false);
   }
@@ -159,7 +163,7 @@ export default function ProductCard({ item, addToCart ,removeFromCart}) {
             <span>{isAddToCartClicked ? "Remove" : "Add to Cart"}</span>
           </div>
           {!isAddToCartClicked && (
-            <div className="flex items-center justify-center space-x-3 w-full px-5 py-2 bg-yellow-300 rounded-full">
+            <div onClick={handleBuyNow} className="flex items-center justify-center space-x-3 w-full px-5 py-2 bg-yellow-300 rounded-full">
               <MdOutlineShoppingCartCheckout />
               <span>Buy Now</span>
             </div>

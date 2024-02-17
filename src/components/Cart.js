@@ -13,18 +13,6 @@ const Cart = ({ cart, removeFromCart }) => {
 
   const navigate = useNavigate();
 
-  // function handlePlaceOrder() {
-  //   const finalOrderItem = {
-  //     item: item,
-  //     isBox: isBoxClicked,
-  //     quantity: quantity,
-  //   };
-    
-  // }
-  function handlePlaceOrder1(){
-    console.log("cart->",cart)
-  }
-
   function handlePlaceOrder() {
     // Prepare the order data
     const orderData = {

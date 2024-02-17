@@ -65,10 +65,7 @@ const Home = ({ onInquirySubmit }) => {
         >
           Products
         </button>
-        <InquiryForm onInquirySubmit={onInquirySubmit} />
-        {/* <SignInWithGoogle/> */}
-        {/* <EmailSignIn/> */}
-        {/* <CreateCustomerForm/> */}
+        <InquiryForm/>
       </div>
     </div>
   );
