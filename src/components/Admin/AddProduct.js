@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useFirebase } from "../../context/FirebaseContext";
-import { collection, addDoc, updateDoc, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
 import { FaCamera } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import { MdDeleteForever } from "react-icons/md";
+
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -19,7 +21,6 @@ const AddProductForm = ({ isEdit }) => {
   const { db } = useFirebase();
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
-  // const [initialValues, setInitialValues] = useState({});
 
   const { productId } = useParams();
 
@@ -48,6 +49,20 @@ const AddProductForm = ({ isEdit }) => {
        fetchProduct();
     }
   }, [db, productId]);
+
+  const handleDeleteProduct = async () => {
+    // setLoading(true);
+    try {
+      const docRef = doc(db, "products", productId);
+      await deleteDoc(docRef);
+      console.log("Product deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Error deleting product. Please try again.");
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
@@ -92,8 +107,12 @@ const AddProductForm = ({ isEdit }) => {
     );
   } else {
     return (
-      <div>
-        <h2>Add Product</h2>
+      <div className=" relative">
+         {isEdit && (
+                <button onClick={handleDeleteProduct} className="text-4xl bg-red-400 absolute top-4 left-4 z-10 text-black px-4 py-4 rounded-full drop-shadow-xl">
+                  <MdDeleteForever/>
+                </button>
+              )}
         <Formik
           initialValues={product}
           validationSchema={validationSchema}
@@ -107,6 +126,10 @@ const AddProductForm = ({ isEdit }) => {
                   <FaCamera />
                 </div>
               </div>
+              {isEdit &&(
+                <div>Product ID: {productId}</div>
+              )}
+              
               <div>
                 <Field
                   className="w-full px-2 py-2 rounded-md bg-slate-100"
@@ -161,8 +184,9 @@ const AddProductForm = ({ isEdit }) => {
                 />
                 <ErrorMessage name="image" />
               </div>
+             
               <button
-                className="w-full rounded-full bg-blue-700 text-white py-2"
+                className="w-full rounded-full bg-blue-700 text-white py-2 px-4"
                 type="submit"
                 disabled={isSubmitting}
               >

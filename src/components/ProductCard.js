@@ -57,7 +57,7 @@ export default function ProductCard({ item, addToCart ,removeFromCart}) {
         <img
           src={isBoxClicked ? "./box.jpg" : image}
           alt=""
-          className="rounded-t-md"
+          className="rounded-t-md w-full aspect-square"
         ></img>
 
         <div className="absolute h-20 w-20 rounded-full bg-red-600 flex items-center justify-center text-3xl top-3 left-3 text-white drop-shadow-lg">
