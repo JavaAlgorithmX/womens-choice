@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddProductForm from "./AddProduct";
+import { collection, getDocs } from "firebase/firestore";
+import { useFirebase } from "../../context/FirebaseContext";
+import AdminProductCard from "./AdminProductCard";
 
 export default function ManageProduct() {
   const [isAddProduct, setIsAddProduct] = useState(false);
+  const [products, setProducts] = useState([]); // State to store products
+  const { db } = useFirebase(); // Get the Firestore instance from the Firebase context
+
   function handleAddProductSelect() {
     setIsAddProduct(true);
   }
@@ -10,6 +16,26 @@ export default function ManageProduct() {
   function handleEditSelect() {
     setIsAddProduct(false);
   }
+
+  useEffect(() => {
+    // Fetch products when the component mounts
+    const fetchProducts = async () => {
+      try {
+        const productsCollection = collection(db, "products"); // Assuming "products" is the name of your Firestore collection
+        const querySnapshot = await getDocs(productsCollection);
+        const productsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProducts(productsData);
+        // console.log(productsData)
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [db]);
 
   return (
     <div>
@@ -34,13 +60,20 @@ export default function ManageProduct() {
           {isAddProduct ? "Add Product" : "Edit Product"}
         </div>
       </div>
-      {isAddProduct && 
-        <div><AddProductForm /></div>
-      }
-      {!isAddProduct && 
-        <div>Edit Product</div>
-      }
-      
+      {isAddProduct && (
+        <div>
+          <AddProductForm isEdit={false} />
+        </div>
+      )}
+      {!isAddProduct && (
+        <div className="space-y-2">
+          <div>Edit Product</div>
+          {products.map((product,index) => (
+            <AdminProductCard key={index} productData={product}/>
+            // <li key={product.id}>{product.name}</li>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

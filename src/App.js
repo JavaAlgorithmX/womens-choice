@@ -14,6 +14,7 @@ import EmailSignIn from "./auth/SignInEmail";
 import CreateCustomerForm from "./components/User/CreateCustomer";
 import MyOrders from "./components/MyOrders";
 import AdminOrderDetails from "./components/Admin/AdminOrderDetails";
+import AddProductForm from "./components/Admin/AddProduct";
 
 const App = () => {
   const [cart, setCart] = useState([]);
@@ -120,6 +121,7 @@ const App = () => {
               <Route path="/admin/manage-products" element={<ManageProduct/>}/>
               <Route path="/admin/manage-users" element={<ManageUser/>}/>
               <Route path="/admin/order/:orderId" element={<AdminOrderDetails orderData={orderData}/>}  />
+              <Route path="/admin/edit-product/:productId" element={<AddProductForm isEdit={true}/>}  />
             </Route>
           </Routes>
     </Router>
