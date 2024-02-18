@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { app, db } from '../config/firebase'; // Import your Firebase app and Firestore instance
 import { getAuth } from 'firebase/auth'; // Import auth from Firebase Authentication
 import { onSnapshot, doc } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+
 
 // Create a context
 const FirebaseContext = createContext();
@@ -14,6 +16,7 @@ export const FirebaseProvider = ({ children }) => {
   const [userRole, setUserRole] = useState(null);
   const [userMobile, setUserMobile] = useState(null);
 
+  const storage = getStorage(app);
 
   // Initialize auth
   const auth = getAuth(app);
@@ -51,6 +54,7 @@ useEffect(() => {
     userRole,
     currentUser,
     db,
+    storage,
     auth // Include auth in the context value
   };
 

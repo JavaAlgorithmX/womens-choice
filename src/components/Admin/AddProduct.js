@@ -2,11 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useFirebase } from "../../context/FirebaseContext";
-import { collection, addDoc, updateDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  getDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { FaCamera } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
-
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Compressor from "compressorjs";
+import { ImageCompressor } from "image-compressor";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -14,18 +23,88 @@ const validationSchema = Yup.object().shape({
   boxDiscount: Yup.number().required("Box discount is required"),
   mrp: Yup.number().required("MRP is required"),
   discount: Yup.number().required("Discount is required"),
-  image: Yup.string().required("Image URL is required"),
 });
 
 const AddProductForm = ({ isEdit }) => {
-  const { db } = useFirebase();
+  const { db, storage } = useFirebase();
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
+
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+  // const handleImageChange = (e) => {
+  //   if (e.target.files[0]) {
+  //     // Resize and compress the selected image
+  //     new ImageCompressor(e.target.files[0], {
+  //       maxWidth: 500, // Set maximum width
+  //       maxHeight: 500, // Set maximum height
+  //       quality: 0.6, // Set compression quality (0 to 1)
+  //       success: (result) => {
+  //         // Further compress the resized image to reduce size
+  //         new Compressor(result, {
+  //           maxSize: 250 * 1024, // Set maximum file size in bytes (250kb)
+  //           quality: 0.6, // Set compression quality (0 to 1)
+  //           success: (compressedResult) => {
+  //             console.log("successful compressed")
+  //             setImage(compressedResult); // Set the compressed image
+  //           },
+  //           error: (error) => {
+  //             console.error("Image compression error:", error);
+  //           },
+  //         });
+  //       },
+  //       error: (error) => {
+  //         console.error("Image resizing error:", error);
+  //       },
+  //     });
+  //     console.log("success");
+  //   }
+  // };
+
+  // const handleImageChange = async (e) => {
+  //   if (e.target.files[0]) {
+  //     try {
+  //       const compressedImage = await new Promise((resolve, reject) => {
+  //         // Resize and compress the selected image
+  //         new ImageCompressor(e.target.files[0], {
+  //           maxWidth: 500, // Set maximum width
+  //           maxHeight: 500, // Set maximum height
+  //           quality: 0.6, // Set compression quality (0 to 1)
+  //           success: (result) => {
+  //             // Further compress the resized image to reduce size
+  //             new Compressor(result, {
+  //               maxSize: 250 * 1024, // Set maximum file size in bytes (250kb)
+  //               quality: 0.6, // Set compression quality (0 to 1)
+  //               success: (compressedResult) => {
+  //                 resolve(compressedResult); // Resolve with the compressed image
+  //               },
+  //               error: (error) => {
+  //                 reject(error); // Reject with the compression error
+  //               },
+  //             });
+  //           },
+  //           error: (error) => {
+  //             reject(error); // Reject with the resizing error
+  //           },
+  //         });
+  //       });
+  
+  //       setImage(compressedImage); // Set the compressed image
+  //     } catch (error) {
+  //       console.error("Image compression error:", error);
+  //     }
+  //   }
+  // };
+  
+
 
   const { productId } = useParams();
 
   useEffect(() => {
-    
     const fetchProduct = async () => {
       // console.log("Loading -1 ",loading)
       setLoading(true);
@@ -42,11 +121,11 @@ const AddProductForm = ({ isEdit }) => {
       } finally {
         // console.log("Loading status ",loading);
         // console.log("Product from use Effect 1 ->",product);
-        setLoading(false)
+        setLoading(false);
       }
     };
     if (productId) {
-       fetchProduct();
+      fetchProduct();
     }
   }, [db, productId]);
 
@@ -79,6 +158,13 @@ const AddProductForm = ({ isEdit }) => {
         });
         console.log("Product updated successfully!");
       } else {
+        // Upload image to Firebase Storage
+        const storageRef = ref(storage, `images/${image.name}`);
+        await uploadBytes(storageRef, image);
+
+        // Get the download URL of the uploaded image
+        const imageUrl = await getDownloadURL(storageRef);
+
         // Add the new product to Firestore
         await addDoc(collection(db, "products"), {
           name: values.name,
@@ -86,7 +172,8 @@ const AddProductForm = ({ isEdit }) => {
           boxDiscount: values.boxDiscount,
           mrp: values.mrp,
           discount: values.discount,
-          image: values.image,
+          // image: values.image,
+          image: imageUrl,
         });
         console.log("Product added successfully!");
       }
@@ -108,11 +195,14 @@ const AddProductForm = ({ isEdit }) => {
   } else {
     return (
       <div className=" relative">
-         {isEdit && (
-                <button onClick={handleDeleteProduct} className="text-4xl bg-red-400 absolute top-4 left-4 z-10 text-black px-4 py-4 rounded-full drop-shadow-xl">
-                  <MdDeleteForever/>
-                </button>
-              )}
+        {isEdit && (
+          <button
+            onClick={handleDeleteProduct}
+            className="text-4xl bg-red-400 absolute top-4 left-4 z-10 text-black px-4 py-4 rounded-full drop-shadow-xl"
+          >
+            <MdDeleteForever />
+          </button>
+        )}
         <Formik
           initialValues={product}
           validationSchema={validationSchema}
@@ -120,16 +210,34 @@ const AddProductForm = ({ isEdit }) => {
         >
           {({ isSubmitting }) => (
             <Form className="space-y-2 px-2 py-2">
-              <div className="w-full aspect-square bg-slate-100 rounded-md relative">
-                <img src={product.image} alt=""></img>
-                <div className="px-4 py-4 top-2 right-2 drop-shadow-lg text-3xl bg-slate-300 absolute rounded-full">
-                  <FaCamera />
-                </div>
-              </div>
-              {isEdit &&(
-                <div>Product ID: {productId}</div>
-              )}
-              
+              <input
+                id="imageUpload"
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*"
+                className="hidden w-full aspect-square bg-slate-100 rounded-md relative"
+              ></input>
+              <label
+                htmlFor="imageUpload"
+                className="w-full aspect-square bg-slate-100 rounded-md relative"
+              >
+                {/* Show selected image */}
+                {/* {image ? ( */}
+                  <div className=" relative">
+                  <img
+                    src={image ? 
+                      // image
+                      URL.createObjectURL(image)
+                      :'.././placeholder.jpg'}
+                    alt=""
+                  />
+                  <div className="px-4 py-4 top-2 right-2 drop-shadow-lg text-3xl bg-slate-300 absolute rounded-full">
+                    <FaCamera />
+                  </div>
+                  </div>
+              </label>
+              {isEdit && <div>Product ID: {productId}</div>}
+
               <div>
                 <Field
                   className="w-full px-2 py-2 rounded-md bg-slate-100"
@@ -184,7 +292,7 @@ const AddProductForm = ({ isEdit }) => {
                 />
                 <ErrorMessage name="image" />
               </div>
-             
+
               <button
                 className="w-full rounded-full bg-blue-700 text-white py-2 px-4"
                 type="submit"

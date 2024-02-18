@@ -20,6 +20,7 @@ export default function Header({ cart }) {
   function handleMenuClose() {
     setIsMenuOpen(false);
   }
+
   function handleMenuOpen() {
     setIsMenuOpen(true);
   }
@@ -43,6 +44,7 @@ export default function Header({ cart }) {
           <Link className="text-3xl ml-1" to={"/"}>
             <img src="./logo.jpeg" className="h-16 rounded-md" alt=""></img>
           </Link>
+          <div className="bg-red-700 px-3 py-3 rounded-md text-white drop-shadow-lg">TESTING V 1.0</div>
           <div className="flex space-x-3 text-4xl">
             <div>
               <IoMdNotificationsOutline />
@@ -143,18 +145,18 @@ export default function Header({ cart }) {
                 <span>Cart</span>
               </Link>
             </li>
-            {currentUser &&
+            {currentUser && (
               <li>
-              <Link
-                to="/my-orders"
-                onClick={handleMenuClose}
-                className="space-x-3 flex items-center justify-center"
-              >
-                <LuShoppingCart />
-                <span>My Orders</span>
-              </Link>
-            </li>
-            }
+                <Link
+                  to="/my-orders"
+                  onClick={handleMenuClose}
+                  className="space-x-3 flex items-center justify-center"
+                >
+                  <LuShoppingCart />
+                  <span>My Orders</span>
+                </Link>
+              </li>
+            )}
             {currentUser && userRole === "admin" && (
               <li>
                 <Link
