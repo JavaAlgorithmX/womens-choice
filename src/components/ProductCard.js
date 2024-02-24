@@ -6,9 +6,11 @@ import {
 import { GoPlus } from "react-icons/go";
 import { FiMinus } from "react-icons/fi";
 import { BsCartX } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 
 export default function ProductCard({ item, addToCart ,removeFromCart}) {
+  const navigate = useNavigate();
   const image = item.image;
   const name = item.name;
   const discount = item.discount;
@@ -36,6 +38,8 @@ export default function ProductCard({ item, addToCart ,removeFromCart}) {
   }
 
   function handleBuyNow(){
+    handleAddToCart();
+    navigate('/cart')
 
   }
 

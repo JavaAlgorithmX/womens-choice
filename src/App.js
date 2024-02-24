@@ -24,7 +24,10 @@ const App = () => {
 
   const removeFromCart = (item) => {
     console.log("Cart -> ",cart)
-    setCart(cart.filter((i) => i.id !== item.id));
+    console.log("item remove -> ",item);
+    setCart(cart.filter((i) => i.item.id !== item.item.id));
+    console.log("item.id---> ",item.item.id)
+    console.log("cart after remove-> ",cart);
   };
 
   return (

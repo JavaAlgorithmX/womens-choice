@@ -34,9 +34,10 @@ const Products = ({ items, addToCart, removeFromCart }) => {
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {products.map((item) => (
           <ProductCard
-          item={item}
+            key={item.id}
+            item={item}
             addToCart={addToCart} 
-           removeFromCart={removeFromCart}
+            removeFromCart={removeFromCart}
           />
         ))}
       </div>

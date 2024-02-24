@@ -36,72 +36,6 @@ const AddProductForm = ({ isEdit }) => {
       setImage(e.target.files[0]);
     }
   };
-  // const handleImageChange = (e) => {
-  //   if (e.target.files[0]) {
-  //     // Resize and compress the selected image
-  //     new ImageCompressor(e.target.files[0], {
-  //       maxWidth: 500, // Set maximum width
-  //       maxHeight: 500, // Set maximum height
-  //       quality: 0.6, // Set compression quality (0 to 1)
-  //       success: (result) => {
-  //         // Further compress the resized image to reduce size
-  //         new Compressor(result, {
-  //           maxSize: 250 * 1024, // Set maximum file size in bytes (250kb)
-  //           quality: 0.6, // Set compression quality (0 to 1)
-  //           success: (compressedResult) => {
-  //             console.log("successful compressed")
-  //             setImage(compressedResult); // Set the compressed image
-  //           },
-  //           error: (error) => {
-  //             console.error("Image compression error:", error);
-  //           },
-  //         });
-  //       },
-  //       error: (error) => {
-  //         console.error("Image resizing error:", error);
-  //       },
-  //     });
-  //     console.log("success");
-  //   }
-  // };
-
-  // const handleImageChange = async (e) => {
-  //   if (e.target.files[0]) {
-  //     try {
-  //       const compressedImage = await new Promise((resolve, reject) => {
-  //         // Resize and compress the selected image
-  //         new ImageCompressor(e.target.files[0], {
-  //           maxWidth: 500, // Set maximum width
-  //           maxHeight: 500, // Set maximum height
-  //           quality: 0.6, // Set compression quality (0 to 1)
-  //           success: (result) => {
-  //             // Further compress the resized image to reduce size
-  //             new Compressor(result, {
-  //               maxSize: 250 * 1024, // Set maximum file size in bytes (250kb)
-  //               quality: 0.6, // Set compression quality (0 to 1)
-  //               success: (compressedResult) => {
-  //                 resolve(compressedResult); // Resolve with the compressed image
-  //               },
-  //               error: (error) => {
-  //                 reject(error); // Reject with the compression error
-  //               },
-  //             });
-  //           },
-  //           error: (error) => {
-  //             reject(error); // Reject with the resizing error
-  //           },
-  //         });
-  //       });
-  
-  //       setImage(compressedImage); // Set the compressed image
-  //     } catch (error) {
-  //       console.error("Image compression error:", error);
-  //     }
-  //   }
-  // };
-  
-
-
   const { productId } = useParams();
 
   useEffect(() => {
@@ -221,16 +155,20 @@ const AddProductForm = ({ isEdit }) => {
                 htmlFor="imageUpload"
                 className="w-full aspect-square bg-slate-100 rounded-md relative"
               >
-                {/* Show selected image */}
-                {/* {image ? ( */}
                   <div className=" relative">
                   <img
                     src={image ? 
-                      // image
+                    
                       URL.createObjectURL(image)
                       :'.././placeholder.jpg'}
                     alt=""
                   />
+                  {isEdit && (
+                    <img
+                    src={product.image}
+                    alt=""
+                  />
+                  )}
                   <div className="px-4 py-4 top-2 right-2 drop-shadow-lg text-3xl bg-slate-300 absolute rounded-full">
                     <FaCamera />
                   </div>
