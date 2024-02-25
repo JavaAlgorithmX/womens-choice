@@ -7,7 +7,7 @@ import { useFirebase } from "../context/FirebaseContext";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const InquiryForm = () => {
-  const { currentUser, db,userMobile } = useFirebase();
+  const { currentUser, db, userMobile } = useFirebase();
 
   const {
     register,
@@ -21,7 +21,7 @@ const InquiryForm = () => {
     if (currentUser) {
       setValue("name", currentUser.displayName);
       setValue("email", currentUser.email);
-      setValue("mobile",userMobile)
+      setValue("mobile", userMobile);
     }
   }, [currentUser, setValue, userMobile]);
 
@@ -46,17 +46,17 @@ const InquiryForm = () => {
   const onSubmit = (data) => {
     addInquiryToFirestore(data);
     console.log(data);
-    reset() 
+    reset();
   };
 
   return (
-    <div className="w-full border-t-slate-600 pb-5">
+    <div className="w-full border-t-slate-600 pb-5 pt-10">
       <div className="text-xl font-semibold text-center pt-3">
         Have a Query? Feel Free to Write to Us!
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className=" flex flex-col px-5 w-full space-y-4 py-4  mt-2"
+        className="mt-5 flex flex-col px-5 w-full space-y-4 py-4 "
       >
         <div className="">
           <input
@@ -120,11 +120,11 @@ const InquiryForm = () => {
           Submit
         </button>
       </form>
-      <div className="text-center text-xl pb-4">
-        Or Contact us on below contact details
+      <div className="text-center text-xl py-8">
+        Contact us on below contact details
       </div>
       <div className="flex flex-col justify-center text-2xl px-4 space-y-2">
-        <div className="flex items-center justify-around">
+        {/* <div className="flex items-center justify-around">
           <p className="flex space-x-2 items-center justify-start">
             <IoIosCall className="text-blue-600" />
             <span>7909064575</span>
@@ -133,21 +133,22 @@ const InquiryForm = () => {
             <FaWhatsapp className="text-green-600" />
             <span>7909064575</span>
           </p>
-        </div>
+        </div> */}
         <div className="flex items-center justify-around">
           <p className="flex space-x-2 items-center justify-start">
             <IoIosCall className="text-blue-600" />
-            <span>7909064575</span>
-          </p>
-          <p className="flex space-x-2 items-center justify-start">
             <FaWhatsapp className="text-green-600" />
-            <span>7909064575</span>
+            <span> +91 8507420613</span>
           </p>
+          {/* <p className="flex space-x-2 items-center justify-start">
+            <FaWhatsapp className="text-green-600" />
+            <span>8507420613</span>
+          </p> */}
         </div>
-        <p className="flex space-x-2 items-center justify-center">
+        <div className="flex space-x-2 items-center justify-center">
           <CiMail className="text-blue-600" />
-          <span>women's-choice@gmail.com</span>
-        </p>
+          <div className="text-center">women's-choice@gmail.com</div>
+        </div>
       </div>
     </div>
   );

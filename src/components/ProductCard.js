@@ -86,7 +86,7 @@ export default function ProductCard({ item, addToCart ,removeFromCart}) {
         <div>
           <div className="flex space-x-5 text-2xl font-bold">
             <div className="text-red-600 ">
-              {isBoxClicked ? `(${discount}+${boxDiscount})` : discount}% off
+              {isBoxClicked ? `${boxDiscount>0?'(':''}${discount}${boxDiscount>0 ? '+':''}${boxDiscount>0 ? boxDiscount : ''} ${boxDiscount>0?')':''}` : discount}% off
             </div>
             <div>
               {" "}

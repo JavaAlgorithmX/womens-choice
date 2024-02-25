@@ -14,8 +14,9 @@ import { FaCamera } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import Compressor from "compressorjs";
-import { ImageCompressor } from "image-compressor";
+import { useNavigate } from "react-router-dom";
+// import Compressor from "compressorjs";
+// import { ImageCompressor } from "image-compressor";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -30,6 +31,7 @@ const AddProductForm = ({ isEdit }) => {
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
@@ -69,11 +71,13 @@ const AddProductForm = ({ isEdit }) => {
       const docRef = doc(db, "products", productId);
       await deleteDoc(docRef);
       console.log("Product deleted successfully!");
+      navigate('/admin/manage-products')
     } catch (error) {
       console.error("Error deleting product:", error);
       alert("Error deleting product. Please try again.");
     } finally {
       // setLoading(false);
+
     }
   };
 
@@ -110,6 +114,7 @@ const AddProductForm = ({ isEdit }) => {
           image: imageUrl,
         });
         console.log("Product added successfully!");
+        navigate('/admin/manage-products')
       }
       // console.log("Product added successfully!",product);
     } catch (error) {

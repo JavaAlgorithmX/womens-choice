@@ -18,16 +18,14 @@ const App = () => {
   const [cart, setCart] = useState([]);
   const [orderData, setOrderData] = useState(null);
   
-  const addToCart = (item) => {
-    setCart([...cart, item]);
+  const addToCart = (newItem) => {
+    const existingItemIndex = cart.findIndex((item) => item.item.id === newItem.item.id);
+    console.log("existingItemIndex  ",existingItemIndex);
+    setCart([...cart, newItem]);
   };
 
   const removeFromCart = (item) => {
-    console.log("Cart -> ",cart)
-    console.log("item remove -> ",item);
     setCart(cart.filter((i) => i.item.id !== item.item.id));
-    console.log("item.id---> ",item.item.id)
-    console.log("cart after remove-> ",cart);
   };
 
   return (

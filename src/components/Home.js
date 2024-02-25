@@ -55,13 +55,13 @@ const Home = ({ onInquirySubmit }) => {
       </div>
 
       <div className=" flex items-center justify-center flex-col space-y-2 bg-gradient-to-r from-teal-200 to-teal-500 pb-5">
-        <Carousel />
-        <p className="text-2xl text-white py-2">
+        {/* <Carousel /> */}
+        <p className="text-2xl text-white  py-10">
           Click Here to See our Products
         </p>
         <button
           onClick={handleProcuctClick}
-          className="px-10 py-3 drop-shadow-md bg-gradient-to-r from-fuchsia-600 to-pink-600 rounded-full text-xl text-white"
+          className=" px-10 py-3 drop-shadow-md bg-gradient-to-r from-fuchsia-600 to-pink-600 rounded-full text-xl text-white w-4/5"
         >
           Products
         </button>
