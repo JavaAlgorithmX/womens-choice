@@ -3,8 +3,7 @@ import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useFirebase } from "../context/FirebaseContext";
 import { BsCartX } from "react-icons/bs";
-import { CiSquarePlus } from "react-icons/ci";
-import { CiSquareMinus } from "react-icons/ci";
+import toast from "react-hot-toast";
 
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
@@ -35,6 +34,7 @@ const Cart = ({ cart, removeFromCart }) => {
     addDoc(collection(db, "orders"), orderData)
       .then((docRef) => {
         console.log("Order placed successfully with ID: ", docRef.id);
+        toast.success(`Order Placed successfully`);
         // Navigate to the order success page or show a confirmation message
       })
       .catch((error) => {
@@ -96,8 +96,13 @@ const Cart = ({ cart, removeFromCart }) => {
           <img src={orderItem.item.image} alt="" className="h-28 w-28" />
         </div>
         <div>
-          <h2 className="text-xl">{orderItem.item.name}</h2>
-          <h1>MRP: {orderItem.item.mrp}</h1>
+          <h2 className="text-md">{orderItem.item.name}</h2>
+          <h1>
+            MRP:{" "}
+            {orderItem.isBox
+              ? orderItem.item.boxSize * orderItem.item.mrp * orderItem.quantity
+              : orderItem.item.mrp * orderItem.quantity}
+          </h1>
           <h1>Type: {orderItem.isBox ? "Box" : "Pc"}</h1>
           {/* <div className="flex space-x-3 justify-center items-center ">
             <div>Quantity </div>

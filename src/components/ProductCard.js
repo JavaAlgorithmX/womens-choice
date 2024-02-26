@@ -7,6 +7,7 @@ import { GoPlus } from "react-icons/go";
 import { FiMinus } from "react-icons/fi";
 import { BsCartX } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 export default function ProductCard({ item, addToCart ,removeFromCart}) {
@@ -35,12 +36,12 @@ export default function ProductCard({ item, addToCart ,removeFromCart}) {
       removeFromCart(cartItem)
     }
     setIsAddToCartClicked(!isAddToCartClicked);
+    toast.success("Product added to cart")
   }
 
   function handleBuyNow(){
     handleAddToCart();
     navigate('/cart')
-
   }
 
   function selectPC() {

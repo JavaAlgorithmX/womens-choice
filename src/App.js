@@ -13,17 +13,44 @@ import CreateCustomerForm from "./components/User/CreateCustomer";
 import MyOrders from "./components/MyOrders";
 import AdminOrderDetails from "./components/Admin/AdminOrderDetails";
 import AddProductForm from "./components/Admin/AddProduct";
+import { Toaster } from 'react-hot-toast';
+import CustOrderDetails from "./components/CustomerOrderDetails";
 
 const App = () => {
   const [cart, setCart] = useState([]);
   const [orderData, setOrderData] = useState(null);
-  
-  const addToCart = (newItem) => {
-    const existingItemIndex = cart.findIndex((item) => item.item.id === newItem.item.id);
-    console.log("existingItemIndex  ",existingItemIndex);
-    setCart([...cart, newItem]);
-  };
 
+  const addToCart = (newItem) => {
+    // const existingItemIndex = cart.findIndex((item) => item.item.id === newItem.item.id);
+    const existingItemIndex = cart.findIndex((item) => {
+      // Check if the item ID and box type are the same
+      return item.item.id === newItem.item.id && item.isBox === newItem.isBox;
+    });
+    // console.log("existingItemIndex  ", existingItemIndex);
+    if (existingItemIndex !== -1) {
+      // If the item already exists in the cart
+      const existingItem = cart[existingItemIndex];
+      // Check if the box type is the same
+      if (existingItem.isBox === newItem.isBox) {
+        // If the box type is the same, update its quantity
+        const updatedCart = cart.map((item, index) => {
+          if (index === existingItemIndex) {
+            return {
+              ...item,
+              quantity: item.quantity + newItem.quantity
+            };
+          }
+          return item;
+        });
+        setCart(updatedCart);
+      } else {
+        setCart([...cart, newItem]);
+      }
+    } else {
+      setCart([...cart, newItem]);
+    }
+  };
+  
   const removeFromCart = (item) => {
     setCart(cart.filter((i) => i.item.id !== item.item.id));
   };
@@ -48,6 +75,7 @@ const App = () => {
             element={<Cart cart={cart} removeFromCart={removeFromCart} />}
           />
           <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/my-orders/:orderId" element={<CustOrderDetails />} />
 
           {/* Admin routes  */}
         </Route>
@@ -68,6 +96,24 @@ const App = () => {
           />
         </Route>
       </Routes>
+      <Toaster
+        position="top-center"
+        gutter={6}
+        containerStyle={{ margin: "5px" }}
+        toastOptions={{
+          success: {
+            duration: 4000,
+          },
+          error: {
+            duration: 4000,
+          },
+          style: {
+            fontSize: "12px",
+            maxWidth: "400px",
+            padding: "10px 20px",
+            backgroundColor: "light-green",
+          },
+        }}/>
     </Router>
   );
 };
