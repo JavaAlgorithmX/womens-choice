@@ -134,7 +134,7 @@ const InquiryForm = () => {
             <span>7909064575</span>
           </p>
         </div> */}
-        <div className="flex items-center justify-around">
+        <div className="flex items-center justify-around text-sm">
           <p className="flex space-x-2 items-center justify-start">
             <IoIosCall className="text-blue-600" />
             <FaWhatsapp className="text-green-600" />
@@ -145,9 +145,9 @@ const InquiryForm = () => {
             <span>8507420613</span>
           </p> */}
         </div>
-        <div className="flex space-x-2 items-center justify-center">
-          <CiMail className="text-blue-600" />
-          <div className="text-center">women's-choice@gmail.com</div>
+        <div className="flex space-x-2 items-center justify-center text-sm">
+          <CiMail className="text-blue-600 text-md" />
+          <div className="text-center ">women's-choice@gmail.com</div>
         </div>
       </div>
     </div>

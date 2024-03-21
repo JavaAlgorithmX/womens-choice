@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import EnquiryCard from "../EnquiryCard";
 // import AdminMenu from "./AdminNav";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useFirebase } from "../../context/FirebaseContext";
 import AdminOrderCard from "./AdminOrderCard";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ async function fetchEnquiries(db) {
 
 async function fetchOrders(db) {
   const orderCollection = collection(db, "orders"); // Assuming "enquiries" is the name of your Firestore collection
-  const snapshot = await getDocs(orderCollection);
+  const snapshot = await getDocs(query( orderCollection, orderBy('createdAt','desc')));
   const ordersData = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),

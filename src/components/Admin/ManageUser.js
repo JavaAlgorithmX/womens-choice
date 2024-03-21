@@ -3,6 +3,7 @@ import { useFirebase } from "../../context/FirebaseContext";
 import { collection, getDocs } from "firebase/firestore";
 import AdminUserCard from "./AdminUserCard";
 
+
 export default function ManageUser(){
     const { db } = useFirebase();
     const [users, setUsers] = useState([]);
@@ -23,7 +24,7 @@ export default function ManageUser(){
     
         fetchUsers();
       }, [db]);
-    
+  
       return (
         <div className="space-y-2 px-2 py-2">
          {users.map((user,index) => (

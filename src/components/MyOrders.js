@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useFirebase } from "../context/FirebaseContext";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { formatDate } from "../utils/utility";
 
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,8 @@ export default function MyOrders(){
             try {
               const q = query(
                 collection(db, "orders"),
-                where("userId", "==", auth.currentUser.uid)
+                where("userId", "==", auth.currentUser.uid),
+                  orderBy("createdAt", "desc") // Sorting by timestamp in descending order
               );
               const querySnapshot = await getDocs(q);
               const fetchedOrders = [];
@@ -70,7 +71,7 @@ export default function MyOrders(){
     
     return(
       <div className="pt-20 px-4">
-      <h1>My Orders</h1>
+      <h1 className="pb-5">My Orders</h1>
       {orders.length === 0 ? (
         <p>No orders found.</p>
       ) : (

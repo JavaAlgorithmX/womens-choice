@@ -88,11 +88,15 @@ const App = () => {
           <Route path="/admin/manage-users" element={<ManageUser />} />
           <Route
             path="/admin/order/:orderId"
-            element={<AdminOrderDetails orderData={orderData} />}
+            element={<CustOrderDetails/>}
           />
           <Route
             path="/admin/edit-product/:productId"
             element={<AddProductForm isEdit={true} />}
+          />
+          <Route
+            path="/admin/manage-users/create-user"
+            element={<CreateCustomerForm/>}
           />
         </Route>
       </Routes>

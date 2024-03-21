@@ -16,12 +16,12 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   mobileNo: Yup.string().required("Mobile no is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  dob: Yup.date().nullable().required("Date of Birth is required"),
+  // dob: Yup.date().nullable().required("Date of Birth is required"),
   shopName: Yup.string().required("Shop name is required"),
   shopAddressLine1: Yup.string().required("Address line 1 is required"),
   shopAddressLine2: Yup.string(),
   landmark: Yup.string(),
-  shopMobileNo: Yup.string().required("Shop mobile no is required"),
+  // shopMobileNo: Yup.string().required("Shop mobile no is required"),
   pin: Yup.string().required("Pin is required"),
   state: Yup.string().required("State is required"),
   country: Yup.string().required("Country is required"),
@@ -35,12 +35,12 @@ const initialValues = {
   name: "",
   mobileNo: "",
   email: "",
-  dob: null,
+  // dob: null,
   shopName: "",
   shopAddressLine1: "",
   shopAddressLine2: "",
   landmark: "",
-  shopMobileNo: "",
+  // shopMobileNo: "",
   pin: "",
   state: "Bihar",
   country: "India",
@@ -49,7 +49,7 @@ const initialValues = {
 };
 
 const CreateCustomerForm = () => {
-  const { db, auth } = useFirebase();
+  const { db, auth, currentUser, userRole } = useFirebase();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); 
 
@@ -57,10 +57,11 @@ const CreateCustomerForm = () => {
     navigate("/");
   }
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     setLoading(true);
     console.log(values); // Handle form submission logic here
     console.log(values.password);
+
     createUserWithEmailAndPassword(auth, values.email, values.password)
     .then(async (userCredential) => {
       const user = userCredential.user;
@@ -76,7 +77,7 @@ const CreateCustomerForm = () => {
             shopAddressLine1: values.shopAddressLine1,
             shopAddressLine2: values.shopAddressLine2,
             landmark: values.landmark,
-            shopMobileNo: values.shopMobileNo,
+          
             pin: values.pin,
             state: "Bihar",
             country: "India",
@@ -86,7 +87,12 @@ const CreateCustomerForm = () => {
             user
           );
           setLoading(false);
-          navigateToHome();
+          if(!currentUser){
+            navigateToHome();
+          }else{
+            console.log("User created successfully")
+          }
+          
         } catch (error) {
           console.error("Error storing user role:", error);
         }
@@ -165,15 +171,7 @@ const CreateCustomerForm = () => {
                 />
                 <ErrorMessage name="confirmPassword" />
               </div>
-              <div>
-                <Field
-                  type="date"
-                  name="dob"
-                  placeholder="Date Of Birth"
-                  className="px-4 w-full h-12 rounded-lg text-xl"
-                />
-                <ErrorMessage name="dob" />
-              </div>
+             
             </div>
 
             <div className="border border-slate-800 px-3 py-3 space-y-3 rounded-md">
@@ -214,15 +212,7 @@ const CreateCustomerForm = () => {
                 />
                 <ErrorMessage name="landmark" />
               </div>
-              <div>
-                <Field
-                  type="text"
-                  name="shopMobileNo"
-                  placeholder="Shop Mobile No"
-                  className="px-4 w-full h-12 rounded-lg text-xl"
-                />
-                <ErrorMessage name="shopMobileNo" />
-              </div>
+             
               <div>
                 <Field
                   type="text"
