@@ -4,20 +4,25 @@ import { useNavigate } from "react-router-dom";
 import { useFirebase } from "../context/FirebaseContext";
 import { BsCartX } from "react-icons/bs";
 import toast from "react-hot-toast";
-
+import { useContext } from "react";
+import { CartContext } from "../context/CartContext"; // Import CartContext
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-const Cart = ({ cart, removeFromCart }) => {
+const Cart = () => {
   const { currentUser, userMobile, db } = useFirebase();
+  const {  removeFromCart, cartData ,clearCart} = useContext(CartContext); // Access addToCart function from CartContext
   const navigate = useNavigate();
 
+  function navigateToOrderPlaced(OrderId){
+    navigate(`/order-placed/:${OrderId}`)
+  }
   function handlePlaceOrder() {
     // Prepare the order data
     const orderData = {
       userId: currentUser.uid, // Assuming you have the current user object available
       userName: currentUser.displayName,
       userMobile: userMobile,
-      products: cart.map((item) => ({
+      products: cartData.map((item) => ({
         productId: item.item.id,
         quantity: item.quantity,
         isBox: item.isBox,
@@ -35,6 +40,8 @@ const Cart = ({ cart, removeFromCart }) => {
       .then((docRef) => {
         console.log("Order placed successfully with ID: ", docRef.id);
         toast.success(`Order Placed successfully`);
+        clearCart();
+        navigateToOrderPlaced(docRef.id);
         // Navigate to the order success page or show a confirmation message
       })
       .catch((error) => {
@@ -45,7 +52,7 @@ const Cart = ({ cart, removeFromCart }) => {
     navigate("/products");
   }
   const calculateTotalMRP = () => {
-    return cart
+    return cartData
       .reduce((total, cartItem) => {
         const itemMRP = cartItem.isBox
           ? cartItem.quantity * cartItem.item.mrp * cartItem.item.boxSize
@@ -55,7 +62,7 @@ const Cart = ({ cart, removeFromCart }) => {
       .toFixed(2);
   };
   const calculateTotalDiscountOnMRP = () => {
-    return cart
+    return cartData
       .reduce((total, cartItem) => {
         const itemDiscount = !cartItem.isBox
           ? cartItem.quantity *
@@ -68,7 +75,7 @@ const Cart = ({ cart, removeFromCart }) => {
       .toFixed(2);
   };
   const calculateTotalBoxDiscountOnMRP = () => {
-    return cart
+    return cartData
       .reduce((total, cartItem) => {
         const itemDiscount = cartItem.isBox
           ? (cartItem.quantity *
@@ -88,7 +95,6 @@ const Cart = ({ cart, removeFromCart }) => {
       calculateTotalBoxDiscountOnMRP()
     );
   };
-
   function OrderCard({ orderItem }) {
     return (
       <div className="relative bg-slate-300 px-2 py-2 rounded-md flex space-x-2">
@@ -164,7 +170,7 @@ const Cart = ({ cart, removeFromCart }) => {
         {/* order  */}
         <div className="bg-slate-400 px-2 py-2 space-y-2 rounded-md">
           <h2>My Order</h2>
-          {cart.map((item, index) => (
+          {cartData.map((item, index) => (
             <OrderCard key={index} orderItem={item} />
           ))}
         </div>
@@ -173,7 +179,7 @@ const Cart = ({ cart, removeFromCart }) => {
           {(calculateTotalMRP() - calculateTotalPayableAmount()).toFixed(2)} on
           this Order
         </div>
-        {cart.length > 0 && <OrderTotal cart={cart} />}
+        {cartData.length > 0 && <OrderTotal cart={cartData} />}
         <div
           onClick={handlePlaceOrder}
           className="w-full px-3 py-3 bg-blue-600 rounded-md flex items-center justify-center text-2xl text-white"
@@ -206,11 +212,10 @@ const Cart = ({ cart, removeFromCart }) => {
       </div>
     );
   }
-
   return (
     <div>
-      {cart.length === 0 && <CartEmptyView />}
-      {cart.length > 0 && <CartProductView />}
+      {cartData.length === 0 && <CartEmptyView />}
+      {cartData.length > 0 && <CartProductView />}
     </div>
   );
 };

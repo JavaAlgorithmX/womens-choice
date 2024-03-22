@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
+import { CartContext } from "../context/CartContext"; // Import CartContext
 import { Link } from "react-router-dom";
 import { LuLogIn } from "react-icons/lu";
 import {
@@ -13,9 +14,11 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { useFirebase } from "../context/FirebaseContext";
 
-export default function Header({ cart }) {
+export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { currentUser, auth, userRole } = useFirebase();
+  const { cartData } = useContext(CartContext); // Access cartData from CartContext
+
 
   function handleMenuClose() {
     setIsMenuOpen(false);
@@ -44,16 +47,20 @@ export default function Header({ cart }) {
           <Link className="text-3xl ml-1" to={"/"}>
             <img src="./logo.jpeg" className="h-16 rounded-md" alt=""></img>
           </Link>
-          <div className="bg-red-700 px-3 py-3 rounded-md text-white drop-shadow-lg">TESTING V 1.0</div>
+          <div className="bg-red-700 px-3 py-3 rounded-md text-white drop-shadow-lg">
+            TESTING V 1.0
+          </div>
           <div className="flex space-x-3 text-4xl">
             <div>
               <IoMdNotificationsOutline />
             </div>
             <Link to="/cart">
               <div className="relative">
-                {cart.length > 0 && (
+              
+                {cartData.length > 0 && (
                   <div className="bg-yellow-500 rounded-full text-lg text-white flex items-center justify-center absolute -top-1 -right-1 h-5 w-5 px-1 py-1">
-                    {cart.length}
+                   
+                    {cartData.length}
                   </div>
                 )}
                 <LuShoppingCart />

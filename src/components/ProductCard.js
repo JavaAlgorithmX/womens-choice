@@ -8,9 +8,14 @@ import { FiMinus } from "react-icons/fi";
 import { BsCartX } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useContext } from "react";
+import { CartContext } from "../context/CartContext"; // Import CartContext
 
 
-export default function ProductCard({ item, addToCart ,removeFromCart}) {
+
+export default function ProductCard({item}) {
+  const { addToCart, removeFromCart } = useContext(CartContext); // Access addToCart function from CartContext
+
   const navigate = useNavigate();
   const image = item.image;
   const name = item.name;

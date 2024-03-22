@@ -4,12 +4,15 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { FirebaseProvider } from "./context/FirebaseContext";
+import { CartProvider } from "./context/CartContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <FirebaseProvider>
-      <App />
+      <CartProvider>
+        <App />
+      </CartProvider>
     </FirebaseProvider>
   </React.StrictMode>
 );
