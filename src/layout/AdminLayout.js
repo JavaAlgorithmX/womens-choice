@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import AdminMenu from "../components/Admin/AdminNav";
+import Footer from "../components/footer";
 
 export default function AdminLayout() {
   return (
@@ -8,6 +9,7 @@ export default function AdminLayout() {
       <main>
         <Outlet />
       </main>
+      <Footer/>
     </div>
   );
 }

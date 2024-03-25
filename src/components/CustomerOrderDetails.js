@@ -12,11 +12,37 @@ const OrderDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState("pending");
   const [isAdminOrderPage, setIsAdminOrderPage] = useState(false);
+  const [customer, setCustomer] = useState(null); // State to store customer details
 
   function printProduct() {
     console.log("Products", products);
     console.log("Order", products);
     console.log(order.products[1].isBox);
+  }
+
+  function customerDetails() {
+    console.log("Cystomet", customer);
+  }
+
+  function CustomerDetailsCard() {
+    if (customer !== null) {
+      return (
+        <div className="bg-yellow-200 p-2 rounded-md drop-shadow-md">
+          <div>Shop Name: {customer.shopName}</div>
+          <div>Mobile: {customer.mobile}</div>
+          <div>
+            Address:
+            <br /> {customer.shopAddressLine1},{customer.shopAddressLine2},
+            Landmark: {customer.landmark},
+            <br />
+            {customer.state} ,{customer.country} , PIN: {customer.pin}
+            <br />
+          </div>
+        </div>
+      );
+    } else {
+      <div>Error loading </div>;
+    }
   }
 
   function OrderCard({ orderItem, index }) {
@@ -48,12 +74,13 @@ const OrderDetailPage = () => {
   }, []);
 
   useEffect(() => {
+    console.log("second useEffect");
     const fetchOrderDetails = async () => {
       try {
         setLoading(true);
         const orderDoc = await getDoc(doc(db, "orders", orderId)); // Fetch order details using orderId
         if (orderDoc.exists()) {
-          // console.log("order-data ", orderDoc.data());
+          console.log("order-data ", orderDoc.data());
           setOrder(orderDoc.data());
           // Fetch products based on product IDs
           const productsData = await Promise.all(
@@ -61,17 +88,29 @@ const OrderDetailPage = () => {
               const productDoc = await getDoc(
                 doc(db, "products", product.productId)
               );
-              // console.log("productDoc -> ", productDoc.data());
+              console.log("productDoc -> ", productDoc.data());
               return productDoc.exists() ? productDoc.data() : null;
             })
           );
-          setProducts(productsData);
+          if (isAdminOrderPage) {
+            setProducts(productsData);
+            // Fetch customer details using user ID from the order
+            const customerDoc = await getDoc(
+              doc(db, "users", orderDoc.data().userId)
+            );
+            if (customerDoc.exists()) {
+              setCustomer(customerDoc.data());
+            } else {
+              console.log("Customer not found");
+            }
+          }
         } else {
           console.log("Order not found");
         }
       } catch (error) {
         console.error("Error fetching order details:", error);
       } finally {
+        console.log("finally ");
         setLoading(false);
       }
     };
@@ -79,19 +118,25 @@ const OrderDetailPage = () => {
     if (orderId) {
       fetchOrderDetails();
     }
-  }, [db, orderId]);
+  }, [db, orderId, isAdminOrderPage]);
 
   // Method to calculate total MRP
   const calculateTotalMRP = (order, products) => {
+    if (order === null) {
+      return 0;
+    }
+
     let totalMRP = 0;
 
     order.products.forEach((orderProduct, index) => {
       const productData = products[index];
 
-      const itemMRP = orderProduct.isBox
-        ? orderProduct.quantity * productData.boxSize * productData.mrp
-        : orderProduct.quantity * productData.mrp;
-      totalMRP += itemMRP;
+      if (productData) {
+        const itemMRP = orderProduct.isBox
+          ? orderProduct.quantity * productData.boxSize * productData.mrp
+          : orderProduct.quantity * productData.mrp;
+        totalMRP += itemMRP;
+      }
     });
 
     return totalMRP.toFixed(2);
@@ -104,9 +149,13 @@ const OrderDetailPage = () => {
     order.products.forEach((orderProduct, index) => {
       const productData = products[index];
 
-      const itemDiscount =
-        orderProduct.quantity * productData.mrp * (productData.discount / 100);
-      totalDiscountOnMRP += itemDiscount;
+      if (productData) {
+        const itemDiscount =
+          orderProduct.quantity *
+          productData.mrp *
+          (productData.discount / 100);
+        totalDiscountOnMRP += itemDiscount;
+      }
     });
 
     return totalDiscountOnMRP.toFixed(2);
@@ -205,6 +254,14 @@ const OrderDetailPage = () => {
           </select>
         </div>
       )}
+      {/* <h1>isAdmin: {`${isAdminOrderPage?"yes":"NO"}`}</h1> */}
+      {isAdminOrderPage &&(
+        <>
+        <h1 className="text-xl">Customer Details</h1>
+         <CustomerDetailsCard />
+        </>
+        
+         )}
       <h3 className="text-xl">Products</h3>
       <div className="space-y-2">
         {products.map((product, index) => (
