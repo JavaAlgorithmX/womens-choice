@@ -71,6 +71,18 @@ export const CartProvider = ({ children }) => {
     saveCartToLocalStorage(updatedCart);
   };
 
+  const updateQuantity = (updatedItem, newQuantity) => {
+    const updatedCart = cartData.map((item) => {
+      if (item.item.id === updatedItem.item.id && item.isBox === updatedItem.isBox) {
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+
+    setCartData(updatedCart);
+    saveCartToLocalStorage(updatedCart);
+  };
+
   // Clear cart
   const clearCart = () => {
     setCartData([]);
@@ -79,7 +91,7 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{ cartData, addToCart, removeFromCart, clearCart }}
+      value={{ cartData, addToCart, removeFromCart, clearCart,updateQuantity }}
     >
       {children}
     </CartContext.Provider>

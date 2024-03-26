@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { useFirebase } from "../context/FirebaseContext";
 import { formatDate } from "../utils/utility";
+import toast from "react-hot-toast";
 
 const OrderDetailPage = () => {
   const { orderId } = useParams(); // Get orderId from URL params
-  const { db, userRole } = useFirebase();
+  const { db } = useFirebase();
   const [order, setOrder] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,12 +17,8 @@ const OrderDetailPage = () => {
 
   function printProduct() {
     console.log("Products", products);
-    console.log("Order", products);
+    console.log("Order", order);
     console.log(order.products[1].isBox);
-  }
-
-  function customerDetails() {
-    console.log("Cystomet", customer);
   }
 
   function CustomerDetailsCard() {
@@ -71,35 +68,37 @@ const OrderDetailPage = () => {
   useEffect(() => {
     // Check if the current URL path contains '/admin/order/'
     setIsAdminOrderPage(window.location.pathname.includes("/admin/order/"));
-  }, []);
+  }, [isAdminOrderPage]);
 
   useEffect(() => {
-    console.log("second useEffect");
     const fetchOrderDetails = async () => {
       try {
         setLoading(true);
         const orderDoc = await getDoc(doc(db, "orders", orderId)); // Fetch order details using orderId
         if (orderDoc.exists()) {
-          console.log("order-data ", orderDoc.data());
+        //  console.log("order-data ", orderDoc.data());
           setOrder(orderDoc.data());
+
           // Fetch products based on product IDs
           const productsData = await Promise.all(
             orderDoc.data().products.map(async (product) => {
               const productDoc = await getDoc(
                 doc(db, "products", product.productId)
               );
-              console.log("productDoc -> ", productDoc.data());
+             // console.log("productDoc -> ", productDoc.data());
               return productDoc.exists() ? productDoc.data() : null;
             })
           );
+
+          setProducts(productsData);
+          // Fetch customer details using user ID from the order
           if (isAdminOrderPage) {
-            setProducts(productsData);
-            // Fetch customer details using user ID from the order
             const customerDoc = await getDoc(
               doc(db, "users", orderDoc.data().userId)
             );
             if (customerDoc.exists()) {
               setCustomer(customerDoc.data());
+            //  console.log("Customer Data ->", customerDoc);
             } else {
               console.log("Customer not found");
             }
@@ -110,7 +109,7 @@ const OrderDetailPage = () => {
       } catch (error) {
         console.error("Error fetching order details:", error);
       } finally {
-        console.log("finally ");
+       // console.log("finally ");
         setLoading(false);
       }
     };
@@ -168,11 +167,15 @@ const OrderDetailPage = () => {
     order.products.forEach((orderProduct, index) => {
       const productData = products[index];
 
-      const itemBoxDiscount = orderProduct.isBox
-        ? (orderProduct.quantity * productData.mrp * productData.boxDiscount) /
-          100
-        : 0;
-      totalBoxDiscountOnMRP += itemBoxDiscount;
+      if (productData) {
+        const itemBoxDiscount = orderProduct.isBox
+          ? (orderProduct.quantity *
+              productData.mrp *
+              productData.boxDiscount) /
+            100
+          : 0;
+        totalBoxDiscountOnMRP += itemBoxDiscount;
+      }
     });
 
     return totalBoxDiscountOnMRP.toFixed(2);
@@ -222,9 +225,21 @@ const OrderDetailPage = () => {
     );
   }
 
-  const handleStatusChange = (event) => {
-    setSelectedStatus(event.target.value);
-    // You may also want to update the status in the database here
+  const handleStatusChange = async (event) => {
+    const newStatus = event.target.value;
+    setSelectedStatus(newStatus);
+
+    try {
+      // Update the status field in Firestore
+      const orderRef = doc(db, "orders", orderId);
+      await updateDoc(orderRef, {
+        status: newStatus,
+      });
+      console.log("Order status updated successfully!");
+      toast.success("Order status updated successfully!");
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
   };
 
   if (loading) {
@@ -236,7 +251,7 @@ const OrderDetailPage = () => {
   }
 
   return (
-    <div className={`${isAdminOrderPage ? "" : "pt-20"} px-4 space-y-2`}>
+    <div className={`${isAdminOrderPage ? "" : "pt-20"} px-4 space-y-2 mb-20`}>
       <h2 onClick={printProduct} className="text-3xl">
         Order Details
       </h2>
@@ -255,13 +270,12 @@ const OrderDetailPage = () => {
         </div>
       )}
       {/* <h1>isAdmin: {`${isAdminOrderPage?"yes":"NO"}`}</h1> */}
-      {isAdminOrderPage &&(
+      {isAdminOrderPage && (
         <>
-        <h1 className="text-xl">Customer Details</h1>
-         <CustomerDetailsCard />
+          <h1 className="text-xl">Customer Details</h1>
+          <CustomerDetailsCard />
         </>
-        
-         )}
+      )}
       <h3 className="text-xl">Products</h3>
       <div className="space-y-2">
         {products.map((product, index) => (

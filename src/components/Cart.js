@@ -10,7 +10,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const Cart = () => {
   const { currentUser, userMobile, db } = useFirebase();
-  const {  removeFromCart, cartData ,clearCart} = useContext(CartContext); // Access addToCart function from CartContext
+  const {  removeFromCart, cartData ,clearCart, updateQuantity} = useContext(CartContext); // Access addToCart function from CartContext
   const navigate = useNavigate();
 
   function navigateToOrderPlaced(OrderId){
@@ -95,7 +95,24 @@ const Cart = () => {
       calculateTotalBoxDiscountOnMRP()
     );
   };
-  function OrderCard({ orderItem }) {
+  function OrderCard({ orderItem}) {
+    const handleQuantityChange = (event) => {
+      const newQuantity = parseInt(event.target.value);
+      updateQuantity(orderItem, newQuantity);
+    };
+    const renderQuantityOptions = () => {
+      // Generate options for quantity dropdown, you can adjust the range as needed
+      const options = [];
+      for (let i = 1; i <= 100; i++) {
+        options.push(
+          <option key={i} value={i}>
+            {i}
+          </option>
+        );
+      }
+      return options;
+    };
+  
     return (
       <div className="relative bg-slate-300 px-2 py-2 rounded-md flex space-x-2">
         <div>
@@ -110,17 +127,13 @@ const Cart = () => {
               : orderItem.item.mrp * orderItem.quantity}
           </h1>
           <h1>Type: {orderItem.isBox ? "Box" : "Pc"}</h1>
-          {/* <div className="flex space-x-3 justify-center items-center ">
-            <div>Quantity </div>
-            <div className="text-xl font-bold rounded-md ">
-              <CiSquareMinus></CiSquareMinus>
-            </div>
-            <div>{orderItem.quantity}</div>
-            <div className=" font-bold rounded-md  text-xl">
-              <CiSquarePlus />
-            </div>
-          </div> */}
-          <h1>Quantity: {orderItem.quantity}</h1>
+        
+          {/* <h1>Quantity: {orderItem.quantity}</h1> */}
+          <h1>Quantity: 
+          <select value={orderItem.quantity} onChange={handleQuantityChange}>
+            {renderQuantityOptions()}
+          </select>
+        </h1>
           <div
             className="text-2xl absolute top-1 right-1 text-red-400"
             onClick={() => removeFromCart(orderItem)}
