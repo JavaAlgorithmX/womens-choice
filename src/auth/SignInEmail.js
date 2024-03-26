@@ -17,6 +17,10 @@ const EmailSignIn = () => {
     navigate("/")
   }
 
+  function navigateToForgetPass(){
+    navigate("/forgetPass");
+  }
+
   const handleSignIn = async () => {
     try {
       const signedInUser = await signInWithEmailAndPassword(
@@ -62,7 +66,7 @@ const EmailSignIn = () => {
         Sign In
       </button>
       {error && <p>{error}</p>}
-      <div className="text-blue-700 cursor-pointer">Forget Password?</div>
+      <div onClick={navigateToForgetPass} className="text-blue-700 cursor-pointer">Forget Password?</div>
       <div>
         Don't have an account?{" "}
         <span className="text-blue-700 cursor-pointer"><Link to={"/signup"}>Sign Up</Link></span> here.

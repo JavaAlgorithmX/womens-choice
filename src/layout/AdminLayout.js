@@ -4,7 +4,7 @@ import Footer from "../components/footer";
 
 export default function AdminLayout() {
   return (
-    <div className="px-4 py-4 min-h-screen">
+    <div className="px-1 py-4 min-h-screen">
       <AdminMenu />
       <main>
         <Outlet />

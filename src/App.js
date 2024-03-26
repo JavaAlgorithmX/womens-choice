@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 import CustOrderDetails from "./components/CustomerOrderDetails";
 import ScrollToTop from "./components/ScrollToTop";
 import OrderPlaced from "./components/OrderPlaced";
+import ForgotPasswordForm from "./auth/ForgetPasswordForm";
 
 const App = () => {
   const [cart, setCart] = useState([]);
@@ -73,6 +74,7 @@ const App = () => {
           />
           <Route path="/login" element={<EmailSignIn />} />
           <Route path="/signup" element={<CreateCustomerForm />} />
+          <Route path="/forgetPass" element={<ForgotPasswordForm/>}/>
 
           <Route
             path="/cart"

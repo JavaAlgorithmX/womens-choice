@@ -47,9 +47,9 @@ export default function Header() {
           <Link className="text-3xl ml-1" to={"/"}>
             <img src="./logo.jpeg" className="h-16 rounded-md" alt=""></img>
           </Link>
-          <div className="bg-red-700 px-3 py-3 rounded-md text-white drop-shadow-lg">
+          {/* <div className="bg-red-700 px-3 py-3 rounded-md text-white drop-shadow-lg">
             TESTING V 1.0
-          </div>
+          </div> */}
           <div className="flex space-x-3 text-4xl">
             <div>
               <IoMdNotificationsOutline />

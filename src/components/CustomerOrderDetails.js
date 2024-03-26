@@ -52,15 +52,53 @@ const OrderDetailPage = () => {
           <h2 className="text-md">{orderItem.name}</h2>
           <h1>
             MRP:{" "}
-            {order.products[index].isBox
+            &#8377; {order.products[index].isBox
               ? orderItem.boxSize *
                 orderItem.mrp *
                 order.products[index].quantity
               : orderItem.mrp * order.products[index].quantity}
           </h1>
-          <h1>Type: {orderItem.isBox ? "Box" : "Pc"}</h1>
-
+          <h1>Type: {order.products[index].isBox ? "Box" : "Pc"}</h1>
+          {order.products[index].isBox && 
+            <h1>Box-Size: {orderItem.boxSize} pc</h1>
+          }
           <h1>Quantity: {order.products[index].quantity}</h1>
+          <h1>
+            Discount:{" "}
+            {order.products[index].isBox
+              ? order.products[index].discount +
+                order.products[index].boxDiscount
+              : order.products[index].discount}{" "}
+            %
+          </h1>
+          <h1>
+            Savings:
+            &#8377; {order.products[index].isBox
+              ? ((order.products[index].discount +
+                  order.products[index].boxDiscount) /
+                  100) *
+                (orderItem.boxSize *
+                  orderItem.mrp *
+                  order.products[index].quantity)
+              : (order.products[index].discount / 100) *
+                (orderItem.mrp * order.products[index].quantity)}
+          </h1>
+          <h1>
+            Payable Amount:{" "}
+            &#8377; {order.products[index].isBox
+              ? orderItem.boxSize *
+                  orderItem.mrp *
+                  order.products[index].quantity -
+                ((order.products[index].discount +
+                  order.products[index].boxDiscount) /
+                  100) *
+                  (orderItem.boxSize *
+                    orderItem.mrp *
+                    order.products[index].quantity)
+              : orderItem.mrp * order.products[index].quantity -
+                (order.products[index].discount / 100) *
+                  (orderItem.mrp * order.products[index].quantity)}
+          </h1>
         </div>
       </div>
     );
@@ -76,7 +114,7 @@ const OrderDetailPage = () => {
         setLoading(true);
         const orderDoc = await getDoc(doc(db, "orders", orderId)); // Fetch order details using orderId
         if (orderDoc.exists()) {
-        //  console.log("order-data ", orderDoc.data());
+          //  console.log("order-data ", orderDoc.data());
           setOrder(orderDoc.data());
 
           // Fetch products based on product IDs
@@ -85,7 +123,7 @@ const OrderDetailPage = () => {
               const productDoc = await getDoc(
                 doc(db, "products", product.productId)
               );
-             // console.log("productDoc -> ", productDoc.data());
+              // console.log("productDoc -> ", productDoc.data());
               return productDoc.exists() ? productDoc.data() : null;
             })
           );
@@ -98,7 +136,7 @@ const OrderDetailPage = () => {
             );
             if (customerDoc.exists()) {
               setCustomer(customerDoc.data());
-            //  console.log("Customer Data ->", customerDoc);
+              //  console.log("Customer Data ->", customerDoc);
             } else {
               console.log("Customer not found");
             }
@@ -109,7 +147,7 @@ const OrderDetailPage = () => {
       } catch (error) {
         console.error("Error fetching order details:", error);
       } finally {
-       // console.log("finally ");
+        // console.log("finally ");
         setLoading(false);
       }
     };
@@ -144,13 +182,21 @@ const OrderDetailPage = () => {
   // Method to calculate total discount on MRP
   const calculateTotalDiscountOnMRP = (order, products) => {
     let totalDiscountOnMRP = 0;
+    console.log("order ->",order);
+    console.log("Products ->",products);
 
     order.products.forEach((orderProduct, index) => {
+      console.log("Index ->",index);
+      console.log("order product ->",orderProduct)
       const productData = products[index];
 
       if (productData) {
-        const itemDiscount =
-          orderProduct.quantity *
+        const itemDiscount = orderProduct.isBox ? 
+        orderProduct.quantity * productData.boxSize *
+          productData.mrp *
+          ((productData.discount+productData.boxDiscount) / 100)
+
+          :orderProduct.quantity *
           productData.mrp *
           (productData.discount / 100);
         totalDiscountOnMRP += itemDiscount;
@@ -170,7 +216,7 @@ const OrderDetailPage = () => {
       if (productData) {
         const itemBoxDiscount = orderProduct.isBox
           ? (orderProduct.quantity *
-              productData.mrp *
+              productData.mrp * productData.boxSize *
               productData.boxDiscount) /
             100
           : 0;
@@ -201,25 +247,25 @@ const OrderDetailPage = () => {
         <div className="py-2">
           <div className="flex items-center justify-between">
             <div>Total MRP</div>
-            <div>{calculateTotalMRP(order, products)}</div>
+            <div>&#8377; {calculateTotalMRP(order, products)}</div>
           </div>
           <div className="flex items-center justify-between">
             <div>discount on MRP</div>
-            <div>{calculateTotalDiscountOnMRP(order, products)}</div>
+            <div>&#8377; {calculateTotalDiscountOnMRP(order, products)}</div>
           </div>
           <div className="flex items-center justify-between">
             <div>Box Discount</div>
-            <div>{calculateTotalBoxDiscountOnMRP(order, products)}</div>
+            <div>&#8377; {calculateTotalBoxDiscountOnMRP(order, products)}</div>
           </div>
           <div className="flex items-center justify-between">
             <div>Shipping Fee</div>
-            <div>FREE</div>
+            <div className="text-green-300">FREE</div>
           </div>
         </div>
         <hr />
         <div className="py-2 flex items-center justify-between">
           <div>Total Amount</div>
-          <div>{calculateTotalPayableAmount(order, products)}</div>
+          <div>&#8377; {calculateTotalPayableAmount(order, products)}</div>
         </div>
       </div>
     );
