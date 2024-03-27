@@ -15,8 +15,6 @@ import { useParams } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
-// import Compressor from "compressorjs";
-// import { ImageCompressor } from "image-compressor";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -71,13 +69,12 @@ const AddProductForm = ({ isEdit }) => {
       const docRef = doc(db, "products", productId);
       await deleteDoc(docRef);
       console.log("Product deleted successfully!");
-      navigate('/admin/manage-products')
+      navigate("/admin/manage-products");
     } catch (error) {
       console.error("Error deleting product:", error);
       alert("Error deleting product. Please try again.");
     } finally {
       // setLoading(false);
-
     }
   };
 
@@ -114,7 +111,7 @@ const AddProductForm = ({ isEdit }) => {
           image: imageUrl,
         });
         console.log("Product added successfully!");
-        navigate('/admin/manage-products')
+        navigate("/admin/manage-products");
       }
       // console.log("Product added successfully!",product);
     } catch (error) {
@@ -160,75 +157,78 @@ const AddProductForm = ({ isEdit }) => {
                 htmlFor="imageUpload"
                 className="w-full aspect-square bg-slate-100 rounded-md relative"
               >
-                  <div className=" relative">
+                <div className=" relative">
                   <img
-                    src={image ? 
-                    
-                      URL.createObjectURL(image)
-                      :'.././placeholder.jpg'}
+                    className="w-full aspect-square"
+                    src={
+                      image
+                        ? URL.createObjectURL(image)
+                        : "https://firebasestorage.googleapis.com/v0/b/women-s-choice-testing.appspot.com/o/images%2Fplaceholder.jpg?alt=media&token=eaaffc97-bbb1-4c81-82cf-7a7ea070a3de"
+                    }
                     alt=""
                   />
-                  {isEdit && (
-                    <img
-                    src={product.image}
-                    alt=""
-                  />
-                  )}
+                  {isEdit && <img src={product.image} alt="" />}
                   <div className="px-4 py-4 top-2 right-2 drop-shadow-lg text-3xl bg-slate-300 absolute rounded-full">
                     <FaCamera />
                   </div>
-                  </div>
+                </div>
               </label>
               {isEdit && <div>Product ID: {productId}</div>}
 
-              <div>
+              <div className="flex w-full space-x-4 items-center justify-between">
+                <div>Product Name </div>
                 <Field
-                  className="w-full px-2 py-2 rounded-md bg-slate-100"
+                  className=" px-2 py-2 rounded-md bg-slate-100"
                   type="text"
                   name="name"
                   placeholder="Name"
                 />
                 <ErrorMessage name="name" />
               </div>
-              <div>
+              <div className="flex w-full space-x-4 items-center justify-between">
+                <div>Box Size </div>
                 <Field
-                  className="w-full px-2 py-2 rounded-md bg-slate-100"
+                  className=" px-2 py-2 rounded-md bg-slate-100"
                   type="number"
                   name="boxSize"
                   placeholder="Box Size"
                 />
                 <ErrorMessage name="boxSize" />
               </div>
-              <div>
+              <div className="flex w-full space-x-4 items-center justify-between">
+                <div>Box-Discount % </div>
                 <Field
-                  className="w-full px-2 py-2 rounded-md bg-slate-100"
+                  className=" px-2 py-2 rounded-md bg-slate-100"
                   type="number"
                   name="boxDiscount"
                   placeholder="Box Discount"
                 />
                 <ErrorMessage name="boxDiscount" />
               </div>
-              <div>
+              <div className="flex w-full space-x-4 items-center justify-between">
+                <div>MRP </div>
                 <Field
-                  className="w-full px-2 py-2 rounded-md bg-slate-100"
+                  className=" px-2 py-2 rounded-md bg-slate-100"
                   type="number"
                   name="mrp"
                   placeholder="MRP"
                 />
                 <ErrorMessage name="mrp" />
               </div>
-              <div>
+              <div className="flex w-full space-x-4 items-center justify-between">
+                <div>Discount % </div>
                 <Field
-                  className="w-full px-2 py-2 rounded-md bg-slate-100"
+                  className=" px-2 py-2 rounded-md bg-slate-100"
                   type="number"
                   name="discount"
                   placeholder="Discount"
                 />
                 <ErrorMessage name="discount" />
               </div>
-              <div>
+              <div className="flex w-full space-x-4 items-center justify-between">
+                <div>Image Url</div>
                 <Field
-                  className="w-full px-2 py-2 rounded-md bg-slate-100"
+                  className=" px-2 py-2 rounded-md bg-slate-100"
                   type="text"
                   name="image"
                   placeholder="Image URL"

@@ -167,7 +167,7 @@ export default function Header() {
             {currentUser && userRole === "admin" && (
               <li>
                 <Link
-                  to="/admin/dashboard"
+                  to="/admin/order"
                   onClick={handleMenuClose}
                   className="space-x-3 flex items-center justify-center"
                 >

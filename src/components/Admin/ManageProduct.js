@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
-import AddProductForm from "./AddProduct";
 import { collection, getDocs } from "firebase/firestore";
 import { useFirebase } from "../../context/FirebaseContext";
 import AdminProductCard from "./AdminProductCard";
+import { useNavigate } from "react-router-dom";
 
 export default function ManageProduct() {
-  const [isAddProduct, setIsAddProduct] = useState(false);
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]); // State to store products
   const { db } = useFirebase(); // Get the Firestore instance from the Firebase context
 
-  function handleAddProductSelect() {
-    setIsAddProduct(true);
-  }
-
-  function handleEditSelect() {
-    setIsAddProduct(false);
+  function navigateToAddProduct(){
+    navigate("/admin/product/add-new")
   }
 
   useEffect(() => {
@@ -39,41 +35,17 @@ export default function ManageProduct() {
 
   return (
     <div>
-      <div className="relative w-full bg-blue-500 h-16 rounded-md flex space-x-5 justify-around items-center text-xl px-1 py-1 mb-3">
-        <div
-          onClick={handleAddProductSelect}
-          className="w-1/2 flex items-center justify-center"
-        >
-          Add Product
+      <div className="space-y-2">
+        <div className="text-2xl flex items-center justify-between">
+          <div>Product</div>
+          <div onClick={navigateToAddProduct}  className="cursor-pointer px-4 py-2 bg-blue-500 rounded-md drop-shadow-md text-white">
+            Add New
+          </div>
         </div>
-        <div
-          onClick={handleEditSelect}
-          className="w-1/2 flex items-center justify-center"
-        >
-          Edit Product
-        </div>
-        <div
-          className={`drop-shadow-md border-2 border-yellow-500  absolute h-14 bg-green-500 w-1/2 rounded-md  ${
-            !isAddProduct ? "right-1" : "-left-3"
-          } top-1  flex items-center justify-center text-white`}
-        >
-          {isAddProduct ? "Add Product" : "Edit Product"}
-        </div>
+        {products.map((product, index) => (
+          <AdminProductCard key={index} productData={product} />
+        ))}
       </div>
-      {isAddProduct && (
-        <div>
-          <AddProductForm isEdit={false} />
-        </div>
-      )}
-      {!isAddProduct && (
-        <div className="space-y-2">
-          <div>Edit Product</div>
-          {products.map((product,index) => (
-            <AdminProductCard key={index} productData={product}/>
-            // <li key={product.id}>{product.name}</li>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

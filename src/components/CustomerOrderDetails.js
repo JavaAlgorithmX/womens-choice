@@ -15,12 +15,6 @@ const OrderDetailPage = () => {
   const [isAdminOrderPage, setIsAdminOrderPage] = useState(false);
   const [customer, setCustomer] = useState(null); // State to store customer details
 
-  function printProduct() {
-    console.log("Products", products);
-    console.log("Order", order);
-    console.log(order.products[1].isBox);
-  }
-
   function CustomerDetailsCard() {
     if (customer !== null) {
       return (
@@ -182,12 +176,12 @@ const OrderDetailPage = () => {
   // Method to calculate total discount on MRP
   const calculateTotalDiscountOnMRP = (order, products) => {
     let totalDiscountOnMRP = 0;
-    console.log("order ->",order);
-    console.log("Products ->",products);
+    // console.log("order ->",order);
+    // console.log("Products ->",products);
 
     order.products.forEach((orderProduct, index) => {
-      console.log("Index ->",index);
-      console.log("order product ->",orderProduct)
+      // console.log("Index ->",index);
+      // console.log("order product ->",orderProduct)
       const productData = products[index];
 
       if (productData) {
@@ -281,7 +275,7 @@ const OrderDetailPage = () => {
       await updateDoc(orderRef, {
         status: newStatus,
       });
-      console.log("Order status updated successfully!");
+      // console.log("Order status updated successfully!");
       toast.success("Order status updated successfully!");
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -298,7 +292,7 @@ const OrderDetailPage = () => {
 
   return (
     <div className={`${isAdminOrderPage ? "" : "pt-20"} px-4 space-y-2 mb-20`}>
-      <h2 onClick={printProduct} className="text-3xl">
+      <h2 className="text-3xl">
         Order Details
       </h2>
       <div className="text-xl">Order ID: {orderId}</div>

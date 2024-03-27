@@ -6,7 +6,7 @@ export default function AdminLayout() {
   return (
     <div className="px-1 py-4 min-h-screen">
       <AdminMenu />
-      <main>
+      <main className="mb-20">
         <Outlet />
       </main>
       <Footer/>

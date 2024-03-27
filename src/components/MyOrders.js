@@ -40,7 +40,7 @@ export default function MyOrders() {
   }
 
   function navigateToOrderDetails(orderId) {
-    console.log(orders);
+    // console.log(orders);
     navigate(`/my-orders/${orderId}`);
   }
 
@@ -55,23 +55,10 @@ export default function MyOrders() {
         <div>Ordered At : {formatDate(order.createdAt)}</div>
         <div>Status : {order.status}</div>
         <div>Total Amount : {order.totalAmount}</div>
-        <div>{order.id}</div>
+       
       </div>
     );
   }
-
-  // Function to fetch product details for a given order
-  const fetchProductDetails = async (productIds) => {
-    const productDetails = [];
-    for (const productId of productIds) {
-      const docRef = db.collection("products").doc(productId);
-      const docSnapshot = await docRef.get();
-      if (docSnapshot.exists()) {
-        productDetails.push({ id: productId, ...docSnapshot.data() });
-      }
-    }
-    return productDetails;
-  };
 
   return (
     <div className="pt-20 px-4">

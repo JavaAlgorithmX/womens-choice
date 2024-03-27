@@ -11,10 +11,8 @@ import toast from "react-hot-toast";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext"; // Import CartContext
 
-
-
-export default function ProductCard({item}) {
-  const { addToCart, removeFromCart } = useContext(CartContext); // Access addToCart function from CartContext
+export default function ProductCard({ item }) {
+  const { addToCart } = useContext(CartContext); // Access addToCart function from CartContext
 
   const navigate = useNavigate();
   const image = item.image;
@@ -26,7 +24,6 @@ export default function ProductCard({item}) {
 
   const [isBoxClicked, setIsBoxClicked] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [isAddToCartClicked, setIsAddToCartClicked] = useState(false);
 
   function handleAddToCart() {
     const cartItem = {
@@ -34,19 +31,14 @@ export default function ProductCard({item}) {
       isBox: isBoxClicked,
       quantity: quantity,
     };
-    if(!isAddToCartClicked){
-      console.log("CartItem", cartItem);
-      addToCart(cartItem);
-    }else{
-      removeFromCart(cartItem)
-    }
-    setIsAddToCartClicked(!isAddToCartClicked);
-    toast.success("Product added to cart")
+    addToCart(cartItem);
+
+    toast.success("Product added to cart");
   }
 
-  function handleBuyNow(){
+  function handleBuyNow() {
     handleAddToCart();
-    navigate('/cart')
+    navigate("/cart");
   }
 
   function selectPC() {
@@ -92,7 +84,14 @@ export default function ProductCard({item}) {
         <div>
           <div className="flex space-x-5 text-2xl font-bold">
             <div className="text-red-600 ">
-              {isBoxClicked ? `${boxDiscount>0?'(':''}${discount}${boxDiscount>0 ? '+':''}${boxDiscount>0 ? boxDiscount : ''} ${boxDiscount>0?')':''}` : discount}% off
+              {isBoxClicked
+                ? `${boxDiscount > 0 ? "(" : ""}${discount}${
+                    boxDiscount > 0 ? "+" : ""
+                  }${boxDiscount > 0 ? boxDiscount : ""} ${
+                    boxDiscount > 0 ? ")" : ""
+                  }`
+                : discount}
+              % off
             </div>
             <div>
               {" "}
@@ -157,27 +156,27 @@ export default function ProductCard({item}) {
               <GoPlus onClick={handleQunatityPlus} />
             </div>
           </div>
-
         </div>
 
         {/* buttons  */}
         <div className="flex flex-col space-y-2 text-xl items-center justify-center py-1">
           <div
             className={`flex items-center justify-center 
-            space-x-3 w-full px-5 py-2 ${
-              isAddToCartClicked ? "bg-slate-500" : "bg-yellow-400"
-            }  rounded-full `}
+            space-x-3 w-full px-5 py-2 ${"bg-yellow-400"}  rounded-full `}
             onClick={handleAddToCart}
-          > {isAddToCartClicked ? <BsCartX/>:
-            <MdAddShoppingCart />}
-            <span>{isAddToCartClicked ? "Remove" : "Add to Cart"}</span>
+          >
+            <MdAddShoppingCart />
+
+            <span>"Add to Cart"</span>
           </div>
-          {!isAddToCartClicked && (
-            <div onClick={handleBuyNow} className="flex items-center justify-center space-x-3 w-full px-5 py-2 bg-yellow-300 rounded-full">
-              <MdOutlineShoppingCartCheckout />
-              <span>Buy Now</span>
-            </div>
-          )}
+
+          <div
+            onClick={handleBuyNow}
+            className="flex items-center justify-center space-x-3 w-full px-5 py-2 bg-yellow-300 rounded-full"
+          >
+            <MdOutlineShoppingCartCheckout />
+            <span>Buy Now</span>
+          </div>
         </div>
       </div>
     </div>
